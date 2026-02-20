@@ -87,6 +87,11 @@ const Desktop = {
                     const name = prompt("Nombre del elemento:");
                     (type === "dir") ? FS.makeDir(`/user/desktop/${name}`) : FS.makeFile(`/user/desktop/${name}`);
                 } },
+                { label: "Borrar Local Storage", action: ()=>{
+                    localStorage.clear();
+                    location.reload();
+                } },
+                
             ]);
         })
         this.refresh();
