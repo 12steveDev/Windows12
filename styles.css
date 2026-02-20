@@ -1,0 +1,125 @@
+/* styles.css */
+@font-face {
+    font-family: "Win95";
+    src: url("fonts/W95FA.otf");
+}
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: "Win95";
+    user-select: none;
+}
+body {
+    width: 100vw;
+    height: 100vh;
+}
+.w95-btn, .w95-box {
+    background: #c0c0c0;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+}
+.w95-btn:active {
+    border: 2px inset #ffffff;
+    background: #b0b0b0;
+    border-top: 2px solid #000000;
+    border-left: 2px solid #000000;
+    border-right: 2px solid #ffffff;
+    border-bottom: 2px solid #ffffff;
+}
+
+.desktop {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    padding: 4px 0;
+    /* El gridTemplate y gap se actualiza en el Desktop.refresh() (JavaScript) */
+    /* El backgroundRepeat y backgroundSize también */
+}
+
+.desktopIcon {
+    display: flex;
+    aspect-ratio: 1/1;
+    /* background: #ff04; */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.desktopIcon img {
+    height: auto;
+    width: 70%;
+    padding: 5px
+}
+.desktopIcon p {
+    color: #000000;
+    text-shadow: #000 2px 2px;
+    width: 90%;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    padding: 2px;
+}
+.desktopIcon:focus p, .desktopIcon:focus img { /* lindo efecto w */
+    color: #ffffff;
+    background: #00017f;
+    border: 1px dashed #ffffff;
+}
+
+.taskbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    width: 100%;
+    height: 30px;
+    background: #c0c0c0;
+    border: 2px outset #ffffff;
+    padding: 2px;
+}
+.taskbar .start-button {
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    gap: 4px;
+}
+.taskbar .start-button img {
+    width: auto;
+    height: 100%;
+}
+.taskbar .start-button p {
+    font-size: 15px
+}
+.context-menu {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    min-height: 50px;
+    min-width: 150px;
+    background: #c1c1c1;
+    color: #000000;
+    border: 2px outset #ffffff;
+    padding: 2px;
+}
+.context-menu .separator {
+    height: 4px;
+    width: 100%;
+    border: 2px outset #ffffff;
+    margin: 4px 0;
+}
+.context-menu .option {
+    cursor: default;
+    font-size: 14px;
+    padding-left: 20px;
+}
+.context-menu .option.disabled {
+    color: #808080;
+}
+.context-menu .option:hover {
+    background: #00017f;
+}
+.context-menu .option:not(.disabled):hover {
+    color: #ffffff;
+}
