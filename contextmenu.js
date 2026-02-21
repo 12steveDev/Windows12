@@ -42,6 +42,7 @@ const ContextMenu = {
         this.menu.style.display = "block";
         this.menu.style.left = `${x}px`;
         this.menu.style.top = `${y}px`;
+        return true;
     },
     hide(){
         this.menu.style.display = "none";

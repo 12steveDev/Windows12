@@ -14,6 +14,7 @@ body {
     width: 100vw;
     height: 100vh;
 }
+/* === PRESETS === */
 .w95-btn, .w95-box {
     background: #c0c0c0;
     border-top: 2px solid #ffffff;
@@ -21,7 +22,10 @@ body {
     border-right: 2px solid #000000;
     border-bottom: 2px solid #000000;
 }
-.w95-btn:active {
+.disabled {
+    color: #808080;
+}
+.w95-btn:not(.disabled):active {
     border: 2px inset #ffffff;
     background: #b0b0b0;
     border-top: 2px solid #000000;
@@ -30,6 +34,7 @@ body {
     border-bottom: 2px solid #ffffff;
 }
 
+/* === DESKTOP === */
 .desktop {
     display: grid;
     width: 100%;
@@ -38,7 +43,6 @@ body {
     /* El gridTemplate y gap se actualiza en el Desktop.refresh() (JavaScript) */
     /* El backgroundRepeat y backgroundSize también */
 }
-
 .desktopIcon {
     display: flex;
     aspect-ratio: 1/1;
@@ -68,6 +72,7 @@ body {
     border: 1px dashed #ffffff;
 }
 
+/* === TASKBAR === */
 .taskbar {
     position: absolute;
     bottom: 0;
@@ -92,6 +97,8 @@ body {
 .taskbar .start-button p {
     font-size: 15px
 }
+
+/* === CONTEXT-MENU === */
 .context-menu {
     position: absolute;
     top: 2px;
@@ -114,12 +121,42 @@ body {
     font-size: 14px;
     padding-left: 20px;
 }
-.context-menu .option.disabled {
-    color: #808080;
-}
 .context-menu .option:hover {
     background: #00017f;
 }
 .context-menu .option:not(.disabled):hover {
     color: #ffffff;
+}
+
+/* === POPUP === */
+.popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 100%;
+}
+.popup .header {
+    display: flex;
+    justify-content: space-between;
+    height: 22px;
+    background: #00017f;
+    color: #ffffff;
+    padding: 2px;
+}
+.popup .header .xBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 18px;
+}
+.popup .content {
+    display: flex;
+    align-items: center;
+    padding: 20px 30px 20px 20px;
+    gap: 10px;
+}
+.popup .content img {
+    width: 50px;
+    height: auto;
 }

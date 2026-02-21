@@ -22,7 +22,7 @@ const Desktop = {
         desktopItems.forEach(item => {
             let itemDiv;
             if (item.type === "file"){
-                itemDiv = this.createHTMLIcon(item.name, item.icon || "icons/file.png");
+                itemDiv = this.createHTMLIcon(item.name, item.icon || "icons/textFile.png");
                 itemDiv.addEventListener("contextmenu", (e)=>{
                     e.preventDefault();
                     e.stopPropagation();
