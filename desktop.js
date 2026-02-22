@@ -15,6 +15,41 @@ const Desktop = {
 
         return appDiv;
     },
+    renameInPlace(itemDiv, item){
+        // Lo más satisfactorio que he hecho en código, diría **mi parte favorita**...
+        const originalP = itemDiv.querySelector("p");
+        const oldText = originalP.textContent;
+
+        const input = E("input");
+        input.type = "text";
+        input.value = oldText;
+
+        originalP.replaceWith(input);
+        input.focus();
+        input.select();
+        input.style.font = window.getComputedStyle(originalP).font;
+
+        input.addEventListener("keydown", (e)=>{
+            if (e.key === "Enter"){
+                e.preventDefault();
+                save()
+            }
+            if (e.key === "Escape"){
+                input.replaceWith(originalP);
+            }
+        });
+        input.addEventListener("blur", ()=>save());
+
+        function save(){
+            const newName = input.value.trim();
+            if (newName && newName !== oldText){
+                FS.rename(`/user/desktop/${item.name}`, newName);
+                // DATO: FS.rename hace un refresh() automático
+            } else {
+                input.replaceWith(originalP);
+            }
+        }
+    },
     refresh(){
         desktop.innerHTML = "";
         // Cargar íconos del desktop
@@ -28,14 +63,32 @@ const Desktop = {
                     e.stopPropagation();
                     // TODO: Completar esta wea
                     ContextMenu.show(e.clientX, e.clientY, [
-                        { label: "Abrir", action: ()=>{} },
+                        // Ni crean que voy a implementar todo esto >:v
+                        { label: "Open", action: ()=>{} },
+                        { label: "Print", action: ()=>{} },
+                        { label: "Quick View", action: ()=>{} },
                         { separator: true },
-                        { label: "Abrir con...", action: ()=>{} },
+                        { label: "Send To     >", action: ()=>{} },
                         { separator: true },
-                        { label: "Eliminar", action: ()=>FS.remove(`/user/desktop/${item.name}`) },
-                        { label: "Cambiar nombre", action: ()=>{} },
+                        { label: "Cut", action: ()=>{} },
+                        { label: "Copy", action: ()=>{} },
                         { separator: true },
-                        { label: "Propiedades", action: ()=>{} },
+                        { label: "Create Shortcut", action: ()=>{} },
+                        { label: "Delete", action: ()=>Popup.showAlert({
+                            title: "Confirm File Delete",
+                            content: `Are you sure you want to send '${item.name}' to the Recycle Bin?`,
+                            icon: "recycleFile.png",
+                            buttons: [
+                                { label: "Yes", action: ()=> FS.remove(`user/desktop/${item.name}`) },
+                                { label: "No", action: ()=> {} }
+                            ],
+                            cancelable: false
+                        }) },
+                        { label: "Rename", action: ()=>{
+                            this.renameInPlace(itemDiv, item);
+                        } },
+                        { separator: true },
+                        { label: "Properties", action: ()=>{} },
                     ])
                 })
             }
@@ -46,12 +99,31 @@ const Desktop = {
                     e.stopPropagation();
                     // TODO: Completar esta wea
                     ContextMenu.show(e.clientX, e.clientY, [
-                        { label: "Abrir", action: ()=>{} },
+                        { label: "Open", action: ()=>{} },
+                        { label: "Explore", action: ()=>{} },
+                        { label: "Find...", action: ()=>{} },
                         { separator: true },
-                        { label: "Eliminar", action: ()=>FS.remove(`/user/desktop/${item.name}`) },
-                        { label: "Cambiar nombre", action: ()=>{} },
+                        { label: "Send To     >", action: ()=>{} },
                         { separator: true },
-                        { label: "Propiedades", action: ()=>{} },
+                        { label: "Cut", action: ()=>{} },
+                        { label: "Copy", action: ()=>{} },
+                        { separator: true },
+                        { label: "Create Shortcut", action: ()=>{} },
+                        { label: "Delete", action: ()=>Popup.showAlert({
+                            title: "Confirm Folder Delete",
+                            content: `Are you sure you want to remove the folder '${item.name}' and move all its contents to the Recycle Bin?`,
+                            icon: "recycleFolder.png",
+                            buttons: [
+                                { label: "Yes", action: ()=> FS.remove(`user/desktop/${item.name}`) },
+                                { label: "No", action: ()=> {} }
+                            ],
+                            cancelable: false
+                        }) },
+                        { label: "Rename", action: ()=>{
+                            this.renameInPlace(itemDiv, item);
+                        } },
+                        { separator: true },
+                        { label: "Properties", action: ()=>{} },
                     ])
                 })
             }
@@ -75,9 +147,18 @@ const Desktop = {
             e.preventDefault();
             console.log(`Click en escritorio coordenadas: ${e.clientX} ${e.clientY}`);
             ContextMenu.show(e.clientX, e.clientY, [
-                { label:"Actualizar", action:()=>Desktop.refresh() },
+                { label: "Active Desktop     >", action: ()=>{} },
                 { separator: true },
-                { label: "Nuevo", action: ()=>{
+                { label: "Arrange Icons     >", action: ()=>{} },
+                { label: "Line Up Icons", action: ()=>{} },
+                { separator: true },
+                { label: "Refresh", action:()=>Desktop.refresh() },
+                { separator: true },
+                { label: "Paste", disabled: true },
+                { label: "Paste Shortcut", disabled: true },
+                { label: "Undo Rename", action: ()=>{} },
+                { separator: true },
+                { label: "New", action: ()=>{
                     // TODO: Hacer esto más... realista XD
                     const type = prompt("Tipo (dir, file):");
                     if (!["dir","file"].includes(type)){
@@ -87,7 +168,10 @@ const Desktop = {
                     const name = prompt("Nombre del elemento:");
                     (type === "dir") ? FS.makeDir(`/user/desktop/${name}`) : FS.makeFile(`/user/desktop/${name}`);
                 } },
-                { label: "Borrar Local Storage", action: ()=>{
+                { separator: true },
+                { label: "Properties", action: ()=>{} },
+                { separator: true },
+                { label: "Reset Local Storage", action: ()=>{
                     localStorage.clear();
                     location.reload();
                 } },

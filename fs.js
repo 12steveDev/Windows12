@@ -16,15 +16,15 @@ const FS = {
                         type: "dir",
                         name: "desktop",
                         child: {
-                            "Mi PC": {
+                            "My Computer": {
                                 type: "file",
-                                name: "Mi PC",
-                                icon: "apps/my_pc.png",
+                                name: "My Computer",
+                                icon: "apps/computer.png",
                                 content: `{"action": "file_explorer"}`
                             },
-                            "Carpeta": {
+                            "Folder": {
                                 type: "dir",
-                                name: "Carpeta",
+                                name: "Folder",
                                 child: {}
                             }
                         }
@@ -168,6 +168,32 @@ const FS = {
         this.save();
         Desktop.refresh();
         return true;
+    },
+    rename(path, newName){
+        path = this.splitPath(path);
+        if (path.length === 0){
+            console.error(`[FS][rename] La ruta está vacía (${path})`);
+            return false;
+        };
+        const fileName = path.pop();
+        const currDir = path.length === 0 ? FS["$"] : this.resolvePath(path);
+        if (!currDir) return false;
+        if (!currDir.child[fileName]){
+            console.error(`[FS][rename]["${currDir.name}"] El elemento "${fileName}" no existe`);
+            return false;
+        }
+        if (currDir.child[newName]){
+            console.error(`[FS][rename]["${currDir.name}"] El archivo "${newName}" ya existe`);
+            return false;
+        }
+        const original = currDir.child[fileName];
+        delete currDir.child[fileName]; // ¿al borrar [fileName], "original" tambien se borra ya que "apuntaba a [fileName]" o ya hizo una copia!?
+        currDir.child[newName] = original;
+        original.name = newName;
+
+        this.save();
+        Desktop.refresh();
+        return newName;
     },
     init(){
         const loadedFS = localStorage.getItem(this.LOCAL_STORAGE);

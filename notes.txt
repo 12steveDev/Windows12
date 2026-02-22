@@ -3,22 +3,6 @@
 ### IDEAS ###
 Quizás añadir RegEdit para los programas por defecto de cada extensión (otro JSON más XDD)
 Agregar arrastrado de los íconos del desktop (y guardar su posición en desktop)
-Cambiar la función "Popup.show()" a:
-```
-show(options) {
-    // Uso:
-    Popup.show({
-        title: "Error",
-        message: "Archivo no encontrado",
-        icon: Popup.ICON_ERROR,
-        buttons: [
-            { text: "Aceptar", action: () => {}, primary: true },
-            { text: "Cancelar", action: () => {} }
-        ],
-        cancelable: true
-    });
-}
-```
 
 ### DUDAS ###
 - ¿qué serán los "programas"?
@@ -32,5 +16,9 @@ show(options) {
 - ¿Añadir eastereggs que en W95/W98 no hay? (darle mi marca)
 
 - ¿esto es un simulador o un sandbox!? 🗣⛏
+
+- ¿Microsoft está temblando por Windows 12!? (XD)
+
+- Hacer que al tocar el nombre de un icono en desktop y quedarse un tiempo haga activar el renombrado
 
 (c) Copiryght 12steve (yo) 2026-2026
