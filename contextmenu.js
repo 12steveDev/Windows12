@@ -33,8 +33,8 @@ const ContextMenu = {
             } else {
                 itemDiv.addEventListener("click", (e)=>{
                     e.stopPropagation();
-                    item.action();
                     this.hide();
+                    item.action();
                 });
             }
             this.menu.appendChild(itemDiv);
