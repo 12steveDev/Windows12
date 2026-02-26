@@ -1,5 +1,6 @@
 ico/
 images/ico/
+.vscode/
 hey.c
 hey.exe
 try.c
