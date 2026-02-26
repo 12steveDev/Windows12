@@ -1,14 +1,15 @@
 // script.js
 const Desktop = {
-    createHTMLIcon(appName, appIcon){
+    createHTMLIcon(appName, appIcon, link=false){
         const appDiv = E("div");
         
         const iconImg = E("img");
         iconImg.src = "images/" + appIcon;
         appDiv.appendChild(iconImg);
-
+        
         const nameP = E("p");
         nameP.textContent = appName;
+        if (link) nameP.innerHTML += " <span style='color: #b0f'>(link)</span>"; // !!! DEBUG/TEMPORARY !!! //
         nameP.style.color = Settings.get("desktopColor");
         nameP.style.fontSize = Settings.get("desktopFontSize");
         appDiv.appendChild(nameP);
@@ -77,12 +78,12 @@ const Desktop = {
                         { label: "Delete", action: ()=>Popup.showAlert({
                             title: "Confirm File Delete",
                             content: `Are you sure you want to send '${item.name}' to the Recycle Bin?`,
-                            icon: "recycleFile.png",
+                            icon: "icons/recycleFile.png",
                             buttons: [
                                 { label: "Yes", action: ()=> FS.remove(`user/desktop/${item.name}`) },
                                 { label: "No", action: ()=> {} }
                             ],
-                            cancelable: false
+                            obligatory: true
                         }) },
                         { label: "Rename", action: ()=>{
                             this.renameInPlace(itemDiv, item);
@@ -112,12 +113,44 @@ const Desktop = {
                         { label: "Delete", action: ()=>Popup.showAlert({
                             title: "Confirm Folder Delete",
                             content: `Are you sure you want to remove the folder '${item.name}' and move all its contents to the Recycle Bin?`,
-                            icon: "recycleFolder.png",
+                            icon: "icons/recycleFolder.png",
                             buttons: [
                                 { label: "Yes", action: ()=> FS.remove(`user/desktop/${item.name}`) },
                                 { label: "No", action: ()=> {} }
                             ],
-                            cancelable: false
+                            obligatory: true
+                        }) },
+                        { label: "Rename", action: ()=>{
+                            this.renameInPlace(itemDiv, item);
+                        } },
+                        { separator: true },
+                        { label: "Properties", action: ()=>{} },
+                    ])
+                })
+            }
+            if (item.type === "link"){
+                itemDiv = this.createHTMLIcon(item.name, item.icon || "icons/textFile.png", link=true);
+                itemDiv.addEventListener("contextmenu", (e)=>{
+                    e.preventDefault();
+                    e.stopPropagation();
+                    ContextMenu.show(e.clientX, e.clientY, [
+                        { label: "Open", action: ()=>{} },
+                        { separator: true },
+                        { label: "Send To     >", action: ()=>{} },
+                        { separator: true },
+                        { label: "Cut", action: ()=>{} },
+                        { label: "Copy", action: ()=>{} },
+                        { separator: true },
+                        { label: "Create Shortcut", action: ()=>{} },
+                        { label: "Delete", action: ()=>Popup.showAlert({
+                            title: "Confirm File Delete",
+                            content: `Are you sure you want to send '${item.name}' to the Recycle Bin?`,
+                            icon: "icons/recycleFile.png",
+                            buttons: [
+                                { label: "Yes", action: ()=> FS.remove(`user/desktop/${item.name}`) },
+                                { label: "No", action: ()=> {} }
+                            ],
+                            obligatory: true
                         }) },
                         { label: "Rename", action: ()=>{
                             this.renameInPlace(itemDiv, item);
@@ -145,10 +178,7 @@ const Desktop = {
     init(){
         desktop.addEventListener("contextmenu", e=>{
             e.preventDefault();
-            console.log(`Click en escritorio coordenadas: ${e.clientX} ${e.clientY}`);
             ContextMenu.show(e.clientX, e.clientY, [
-                { label: "Active Desktop     >", action: ()=>{} },
-                { separator: true },
                 { label: "Arrange Icons     >", action: ()=>{} },
                 { label: "Line Up Icons", action: ()=>{} },
                 { separator: true },

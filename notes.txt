@@ -3,22 +3,34 @@
 ### IDEAS ###
 Quizás añadir RegEdit para los programas por defecto de cada extensión (otro JSON más XDD)
 Agregar arrastrado de los íconos del desktop (y guardar su posición en desktop)
+Agregar enteros "FS.ERROR_*" y que las funciones devuelvan eso en vez de "false" (debugging hell yeah📈)
+Que los programas sean un JSON con:
+- ícono (ruta o base64☠)
+- acción en comando (ej: notepad.exe)
+- nada mas we
 
 ### DUDAS ###
-- ¿qué serán los "programas"?
-- - archivo con comando cmd y la cmd abre el programa
-- - archivo binario que se ejecuta en una vm creada por mi (☠)
 
 - ¿cómo añadimos accesos directos!?
 
 - ¿quién chota se me tomó el jugo de limón que dejé en la mesa!?
 
-- ¿Añadir eastereggs que en W95/W98 no hay? (darle mi marca)
+- ¿Añadimos una recreación del código Javascript real al FS para simular carpetas y archivos del sistema!? XDDD
 
 - ¿esto es un simulador o un sandbox!? 🗣⛏
 
 - ¿Microsoft está temblando por Windows 12!? (XD)
 
 - Hacer que al tocar el nombre de un icono en desktop y quedarse un tiempo haga activar el renombrado
+
+### DUDAS MAS IMPORTANTE ###
+- Si llegamos a hacer un programa que ejecute un assembly creado por mi (obviamente sería opcional, los programas verdaderos serían strings de comandos)... ¿debería hacer que los archivos sean bytes, verdad?? Entonces... ¿hacemos ese cambio??
+Si llego a hacer que los archivos sean bytes, ahora vienen estas preguntas:
+- ¿Cómo hago un "array de bytes" en JS??? ¿Literal un `[0x01, 0x02, 0x03]` o hay maneras más "optimizadas" o algo que no conoca??
+- Para más comodidad en archivos normales, haría una funcion auxiliar "StringToBytes()" que, como dice el nombre, transforme todo a bytes, y quizás otra función "BytesToString()" y así jeje
+
+- ¿"/" o "\"?????
+
+- ¿Implementamos .dll que puedan tener íconos dentro???
 
 (c) Copiryght 12steve (yo) 2026-2026

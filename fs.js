@@ -26,6 +26,11 @@ const FS = {
                                 type: "dir",
                                 name: "Folder",
                                 child: {}
+                            },
+                            "Mi Carpeta": {
+                                type: "link",
+                                name: "Mi Carpeta",
+                                target: "/user/desktop/Folder"
                             }
                         }
                     }

@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Windows 12</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/png" href="images/apps/my_pc.png">
+    <link rel="icon" type="image/png" href="images/apps/computer.png">
 </head>
 <body>
     <div class="desktop"></div>
     <div class="taskbar">
-        <button class="start-button w95-btn">
+        <button class="start-button w95-btn" onclick="Registry.createWindow()">
             <img src="images/icons/windows95_mini.png" alt="Start">
             <p>Start</p>
         </button>
@@ -21,6 +21,8 @@
     <script src="fs.js"></script>
     <script src="settings.js"></script>
 
+    <script src="registry.js"></script>
+    <script src="windowManager.js"></script>
     <script src="contextmenu.js"></script>
     <script src="popup.js"></script>
     <script src="desktop.js"></script>

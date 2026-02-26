@@ -6,6 +6,7 @@ const ContextMenu = {
         this.menu.classList.add("context-menu");
         this.menu.style.display = "none";
         document.body.appendChild(this.menu);
+        // Cerrar al hacer click afuera
         document.addEventListener("click", ()=>this.hide())
     },
     show(x, y, items=[]){
@@ -40,8 +41,41 @@ const ContextMenu = {
             this.menu.appendChild(itemDiv);
         })
         this.menu.style.display = "block";
-        this.menu.style.left = `${x}px`;
-        this.menu.style.top = `${y}px`;
+        this.menu.style.opacity = "0";
+
+        this.menu.style.left = "0";
+        this.menu.style.top = "0";
+
+        // Dimensiones del menú y la ventana
+        const menuWidth = this.menu.offsetWidth;
+        const menuHeight = this.menu.offsetHeight;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+
+        // Posición final
+        let finalX = x;
+        let finalY = y;
+
+        // Si el menú se sale por la derecha
+        if (x + menuWidth > windowWidth){
+            finalX = x - menuWidth;
+        }
+        // Si el menú se sale por la izquierda (por si x es negativo)
+        if (finalX < 0){
+            finalX = 0;
+        }
+        // Si el menú se sale por abajo
+        if (y + menuHeight > windowHeight){
+            finalY = windowHeight - menuHeight;
+        }
+        // Si el menú se sale por arriba
+        if (finalY < 0){
+            finalY = 0;
+        }
+        // Aplicar todo
+        this.menu.style.left = finalX + "px";
+        this.menu.style.top = finalY + "px";
+        this.menu.style.opacity = "1";
         return true;
     },
     hide(){
