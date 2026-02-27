@@ -8,18 +8,18 @@ const FS = {
         type: "dir",
         name: "$",
         child: {
-            "user": {
+            "Windows": {
                 type: "dir",
-                name: "user",
+                name: "Windows",
                 child: {
-                    "desktop": {
+                    "Desktop": {
                         type: "dir",
-                        name: "desktop",
+                        name: "Desktop",
                         child: {
                             "My Computer": {
                                 type: "file",
                                 name: "My Computer",
-                                icon: "apps/computer.png",
+                                icon: "icons/computer.png",
                                 content: `{"action": "file_explorer"}`
                             },
                             "Folder": {
@@ -30,10 +30,46 @@ const FS = {
                             "Mi Carpeta": {
                                 type: "link",
                                 name: "Mi Carpeta",
-                                target: "/user/desktop/Folder"
+                                target: "/Windows/Desktop/Folder"
                             }
                         }
-                    }
+                    },
+                    "System": {
+                        type: "dir",
+                        name: "System",
+                        child: {
+                            "Shell32.dll" : {
+                                type: "file",
+                                name: "Shell32.dll",
+                                content: ""
+                            }
+                        }
+                    },
+                    "Command.com": {
+                        type: "file",
+                        name: "Command.com",
+                        content: ""
+                    },
+                    "Explorer.exe": {
+                        type: "file",
+                        name: "Explorer.exe",
+                        content: ""
+                    },
+                    "Readme.txt": {
+                        type: "file",
+                        name: "Readme.txt",
+                        content: ""
+                    },
+                    "RegEdit.exe": {
+                        type: "file",
+                        name: "RegEdit.exe",
+                        content: ""
+                    },
+                    "Welcome.exe": {
+                        type: "file",
+                        name: "Welcome.exe",
+                        content: ""
+                    },
                 }
             }
         }
@@ -42,7 +78,7 @@ const FS = {
         localStorage.setItem(this.LOCAL_STORAGE, JSON.stringify(this["$"]));
     },
     splitPath(path){
-        return path.split("/").filter(p=>p);
+        return path.split("/").filter(p=>p&&p!=="C:");
     },
     resolvePath(path){
         if (Array.isArray(path)) path = path.join("/"); // Convertir la ruta de array a string
@@ -209,11 +245,11 @@ const FS = {
 }
 // console.log(JSON.stringify(FS["$"], null, 4));
 // FS.makeDir("damns")
-// FS.makeFile("user/desktop/archivo.txt")
-// console.log(FS.readFile("user/desktop/Mi PC"))
+// FS.makeFile("Windows/Desktop/archivo.txt")
+// console.log(FS.readFile("Windows/Desktop/Mi PC"))
 // console.log(FS.list("/", FS.LIST_MODE_ALL).map(i => i.name));
 
 // for (i of [1,2,3,4,5,6,7,8,9,10,11]){
-//     FS.makeFile(`/user/desktop/mama_${i}.exe`);
-//     FS.writeFile(`/user/desktop/mama_${i}.exe`, `Contenido del archivo N_${i}`);
+//     FS.makeFile(`/Windows/Desktop/mama_${i}.exe`);
+//     FS.writeFile(`/Windows/Desktop/mama_${i}.exe`, `Contenido del archivo N_${i}`);
 // }
