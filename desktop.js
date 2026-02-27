@@ -44,7 +44,7 @@ const Desktop = {
         function save(){
             const newName = input.value.trim();
             if (newName && newName !== oldText){
-                FS.rename(`/user/desktop/${item.name}`, newName);
+                FS.rename(`/Windows/Desktop/${item.name}`, newName);
                 // DATO: FS.rename hace un refresh() automático
             } else {
                 input.replaceWith(originalP);
@@ -52,9 +52,10 @@ const Desktop = {
         }
     },
     refresh(){
-        desktop.innerHTML = "";
+        $$(".desktopIcon", desktop).forEach(i => i.remove());
+        desktop.style.height = "calc(100% - 30px)"; // TODO: Hacer que en Settings haya valor para la altura del taskbar (30px)
         // Cargar íconos del desktop
-        const desktopItems = FS.list("user/desktop", FS.LIST_MODE_ALL);
+        const desktopItems = FS.list("Windows/Desktop", FS.LIST_MODE_ALL);
         desktopItems.forEach(item => {
             let itemDiv;
             if (item.type === "file"){
@@ -80,7 +81,7 @@ const Desktop = {
                             content: `Are you sure you want to send '${item.name}' to the Recycle Bin?`,
                             icon: "icons/recycleFile.png",
                             buttons: [
-                                { label: "Yes", action: ()=> FS.remove(`user/desktop/${item.name}`) },
+                                { label: "Yes", action: ()=> FS.remove(`Windows/Desktop/${item.name}`) },
                                 { label: "No", action: ()=> {} }
                             ],
                             obligatory: true
@@ -115,7 +116,7 @@ const Desktop = {
                             content: `Are you sure you want to remove the folder '${item.name}' and move all its contents to the Recycle Bin?`,
                             icon: "icons/recycleFolder.png",
                             buttons: [
-                                { label: "Yes", action: ()=> FS.remove(`user/desktop/${item.name}`) },
+                                { label: "Yes", action: ()=> FS.remove(`Windows/Desktop/${item.name}`) },
                                 { label: "No", action: ()=> {} }
                             ],
                             obligatory: true
@@ -147,7 +148,7 @@ const Desktop = {
                             content: `Are you sure you want to send '${item.name}' to the Recycle Bin?`,
                             icon: "icons/recycleFile.png",
                             buttons: [
-                                { label: "Yes", action: ()=> FS.remove(`user/desktop/${item.name}`) },
+                                { label: "Yes", action: ()=> FS.remove(`Windows/Desktop/${item.name}`) },
                                 { label: "No", action: ()=> {} }
                             ],
                             obligatory: true
@@ -196,7 +197,7 @@ const Desktop = {
                         return;
                     }
                     const name = prompt("Nombre del elemento:");
-                    (type === "dir") ? FS.makeDir(`/user/desktop/${name}`) : FS.makeFile(`/user/desktop/${name}`);
+                    (type === "dir") ? FS.makeDir(`/Windows/Desktop/${name}`) : FS.makeFile(`/Windows/Desktop/${name}`);
                 } },
                 { separator: true },
                 { label: "Properties", action: ()=>{} },
