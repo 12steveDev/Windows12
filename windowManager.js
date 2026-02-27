@@ -140,7 +140,6 @@ const WindowManager = {
         return true;
     },
 }
-Registry.createWindow();
 // const testP = E("div");
 // testP.textContent = "Hola Mundo"
 // testP.style.background = "#fff";
