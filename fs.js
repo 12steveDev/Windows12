@@ -4,14 +4,29 @@ const FS = {
     LIST_MODE_ALL: 0,
     LIST_MODE_DIRS: 1,
     LIST_MODE_FILES: 2,
-    "$": {
+    "$": { // Tengo que quitarme esa costumbre al recrear algo, literalmente LO RE-CREO 🗿🚬
         type: "dir",
         name: "$",
         child: {
+            "Dos": {
+                type: "dir",
+                name: "Dos",
+                child: {}
+            },
+            "Program Files": {
+                type: "dir",
+                name: "Program Files",
+                child: {}
+            },
             "Windows": {
                 type: "dir",
                 name: "Windows",
                 child: {
+                    "Command": {
+                        type: "dir",
+                        name: "Command",
+                        child: {}
+                    },
                     "Desktop": {
                         type: "dir",
                         name: "Desktop",
@@ -70,7 +85,67 @@ const FS = {
                         name: "Welcome.exe",
                         content: ""
                     },
+                    "Win.com": {
+                        type: "file",
+                        name: "Win.com",
+                        content: "" // BINARY
+                    },
+                    "Win.ini": {
+                        type: "file",
+                        name: "Win.ini",
+                        content: "[windows]\nload=\nrun=\nNullPort=None\n\n[Desktop]\nWallpaper=(None)\nTileWallpaper=0\nWallpaperStyle=0\n\n[initl]\niCountry=1\nICurrDigits=2\niCurrency=0\niDate=0\niDigits=2\niLZero=1\niMeasure=1\niNegCurr=0\niTime=0\niTLZero=0\ns1159=AM\ns2359=PM\nsCountry=United Stated\nsCurrency=$\nsDate=/\nsDecimal=.\nsLanguage=enu\nsList=,\nsLongDate=dddd, MMMM dd, yyyy\nsShortDate=M/d/yy\nsThousand=,\nsTime=:\n\n[fonts]\n\n[FontSubstitues]\nHelv=MS Sans Serif\nTms Rmn=MS Serif\nTimes=Times New Roman\nHelvetica=Arial\n// FALTA UN CHINGO DE LINEAS TODAVÍA....." // TODO: Terminar
+                    },
                 }
+            },
+            "Autoexec.bat": {
+                type: "file",
+                name: "Autoexec.bat",
+                content: "@ECHO OFF\nPROMPT $p$g\nPATH C:/WINDOWS;C:/WINDOWS/COMMAND;C:/DOS\nSET TEMP=C:/DOS\n"
+            },
+            "Autoexec.dos": {
+                type: "file",
+                name: "Autoexec.dos",
+                content: "@ECHO OFF\nPROMPT $p$g\nPATH C:/DOS\nSET TEMP=C:/DOS\n"
+            },
+            "Command.com": {
+                type: "file",
+                name: "Command.com",
+                content: ""
+            },
+            "Command.dos": {
+                type: "file",
+                name: "Command.dos",
+                content: ""
+            },
+            "Config.dos": {
+                type: "file",
+                name: "Config.dos",
+                content: "DEVICE=C:/DOS/SETVER.EXE\nDEVICE=C:/DOS/HIMEM.SYS\nDOS=HIGH\nFILES=30\n"
+            },
+            "Config.sys": {
+                type: "file",
+                name: "Config.sys",
+                content: "DEVICE=C:/WINDOWS/SETVER.EXE\nDEVICE=C:/WINDOWS/HIMEM.SYS\nDOS=HIGH"
+            },
+            "Io.dos": {
+                type: "file",
+                name: "Io.dos",
+                content: "" // BINARY
+            },
+            "Io.sys": {
+                type: "file",
+                name: "Io.sys",
+                content: "" // Win95 me dijo que el archivo era muy grande para abrirlo en el notepad XDD
+            },
+            "Msdos.dos": {
+                type: "file",
+                name: "Msdos.dos",
+                content: "" // BINARY
+            },
+            "Msdos.sys": {
+                type: "file",
+                name: "Msdos.sys",
+                content: `[Paths]\nWinDir=C:/WINDOWS\nWinBootDir=C:/WINDOWS\nHostWinBootDrv=C\n\n[Options]\nBootMulti=1\nBootGUI=1\nNetwork=0\n;\n;The following lines are required for compatibility with other programs.\n;Do not remove them (MSDOS.sys  needs to be >1024 bytes).\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxa\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxb\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxc\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxd\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxe\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxf\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxg\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxh\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxj\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxk\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxl\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxm\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxn\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxo\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxp\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxq\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxr\n;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxs\n\n`
             }
         }
     },

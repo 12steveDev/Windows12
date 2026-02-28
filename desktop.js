@@ -1,5 +1,15 @@
 // script.js
 const Desktop = {
+    createExplorerWindow(cmdLine){
+        if (cmdLine); // ¿permitir cambios por argumentos!?
+        const baseContent = E("div");
+        // TODO: Terminar esto si es buena idea
+        WindowManager.createWindow({
+            title: "Exploring...",
+            content: baseContent,
+            styles: WindowManager.WS_OVERLAPPEDWINDOW
+        });
+    },
     createHTMLIcon(appName, appIcon, link=false){
         const appDiv = E("div");
         
@@ -212,3 +222,4 @@ const Desktop = {
         this.refresh();
     }
 }
+// Desktop.createExplorerWindow();
