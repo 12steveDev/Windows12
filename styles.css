@@ -213,7 +213,7 @@ body {
 .context-menu .option {
     cursor: default;
     font-size: 14px;
-    padding-left: 20px;
+    padding: 0 20px;
 }
 .context-menu .option:hover {
     background: #00017f;
@@ -256,10 +256,32 @@ body {
 .window .header .buttons :nth-last-child(1){
     margin-left: 4px;
 }
-.window .content {
+.window .menus {
+    display: flex;
+    align-items: center;
+    height: 22px;
+    /* background: #f004; */
+}
+.window .menus button {
+    background: #c0c0c0;
+    border: none;
+    border-top: 1px solid #c0c0c0;
+    height: 100%;
+    padding: 2px 5px;
+    font-size: 14px;
+}
+.window .menus button:focus {
+    background: #00017f;
+    color: #ffffff
+}
+.window:has(.header) .content {
+    /* background: #0ff4; */
     width: 100%;
     overflow: hidden;
-    height: calc(100% - 22px); /* 22px -> headerHeight(22px)*/
+    height: calc(100% - 22px); /* 22px -> headerHeight (22px)*/
+}
+.window:has(.menus) .content {
+    height: calc(100% - 22px - 22px); /* 44px -> headerHeight + menusHeight (22 + 22) */
 }
 .window-backdrop {
     position: absolute;

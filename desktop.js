@@ -76,9 +76,8 @@ const Desktop = {
                     // TODO: Completar esta wea
                     ContextMenu.show(e.clientX, e.clientY, [
                         // Ni crean que voy a implementar todo esto >:v
-                        { label: "Open", action: ()=>{} },
+                        { label: "Open", action: ()=>{ProcessManager.createProcess(`C:/Windows/Desktop/${item.name}`)} },
                         { label: "Print", action: ()=>{} },
-                        { label: "Quick View", action: ()=>{} },
                         { separator: true },
                         { label: "Send To     >", action: ()=>{} },
                         { separator: true },
@@ -223,3 +222,4 @@ const Desktop = {
     }
 }
 // Desktop.createExplorerWindow();
+// Registry.createWindow();

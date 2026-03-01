@@ -1,13 +1,16 @@
 // contextmenu.js
 const ContextMenu = {
     menu: null,
+    hideListener: null,
     init(){
         this.menu = E("div");
         this.menu.classList.add("context-menu");
         this.menu.style.display = "none";
         document.body.appendChild(this.menu);
-        // Cerrar al hacer click afuera
-        document.addEventListener("click", ()=>this.hide())
+
+        this.hideListener = (e)=>{
+            this.hide();
+        }
     },
     show(x, y, items=[]){
         /*
@@ -76,9 +79,15 @@ const ContextMenu = {
         this.menu.style.left = finalX + "px";
         this.menu.style.top = finalY + "px";
         this.menu.style.opacity = "1";
+        // Cerrar al hacer click afuera
+        document.removeEventListener("click", this.hideListener)
+        setTimeout(()=>{
+            document.addEventListener("click", this.hideListener);
+        }, 10); // Pequeño delay para evitar el click que abrió el menú 👏📈
         return true;
     },
-    hide(){
-        this.menu.style.display = "none";
+    hide: ()=>{
+        ContextMenu.menu.style.display = "none";
+        document.removeEventListener("click", ContextMenu.hideListener);
     }
 }

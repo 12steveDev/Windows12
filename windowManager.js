@@ -64,6 +64,23 @@ const WindowManager = {
             windowDiv.appendChild(headerDiv);
             this.addDragging(windowDiv, headerDiv);
         }
+        // === Menus === //
+        if (obj.menu){
+            const menuDiv = E("div");
+            menuDiv.classList.add("menus");
+            for (const [menuLabel, ctxtMenu] of Object.entries(obj.menu)){
+                const menuBtn = E("button");
+                menuBtn.textContent = menuLabel;
+
+                menuBtn.onclick = (e)=>{
+                    const rect = e.target.getBoundingClientRect();
+                    ContextMenu.show(rect.left, rect.top + rect.height, ctxtMenu);
+                }
+
+                menuDiv.appendChild(menuBtn);
+            }
+            windowDiv.appendChild(menuDiv);
+        }
         // === Contenido === //
         const contentDiv = E("div");
         contentDiv.classList.add("content");
@@ -79,7 +96,6 @@ const WindowManager = {
         return true;
     },
     maximizeWindow(windowDiv){
-        // TODO: Usar transition para redimensionado suave w95
         windowDiv.style.transition = "top 0.5s, left 0.5s, width 0.5s, height 0.5s";
         windowDiv.classList.add("maximized");
         $(".header .buttons :nth-child(2)", windowDiv).textContent = "🗗";

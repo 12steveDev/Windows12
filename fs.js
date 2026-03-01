@@ -46,18 +46,48 @@ const FS = {
                                 type: "link",
                                 name: "Mi Carpeta",
                                 target: "/Windows/Desktop/Folder"
-                            }
+                            },
+                            "test.exe": {
+                                type: "file",
+                                name: "test.exe",
+                                content: JSON.stringify(["ALERT", "Hola mundo we"])
+                            },
+                            "Mi nueva gran novela.txt": {
+                                type: "file",
+                                name: "Mi nueva gran novela.txt",
+                                content: `Era hace una vez...`
+                            },
                         }
                     },
                     "System": {
                         type: "dir",
                         name: "System",
                         child: {
+                            "Gdi32.dll" : {
+                                type: "file",
+                                name: "Gdi32.dll",
+                                content: ""
+                            },
+                            "Kernel32.dll" : {
+                                type: "file",
+                                name: "Kernel32.dll",
+                                content: ""
+                            },
                             "Shell32.dll" : {
                                 type: "file",
                                 name: "Shell32.dll",
                                 content: ""
-                            }
+                            },
+                            "User32.dll" : {
+                                type: "file",
+                                name: "User32.dll",
+                                content: ""
+                            },
+                            "Vmm32.vxd" : {
+                                type: "file",
+                                name: "Vmm32.vxd",
+                                content: ""
+                            },
                         }
                     },
                     "Command.com": {
@@ -69,6 +99,16 @@ const FS = {
                         type: "file",
                         name: "Explorer.exe",
                         content: ""
+                    },
+                    "Progman.exe" : {
+                        type: "file",
+                        name: "Progman.exe",
+                        content: ""
+                    },
+                    "Progman.ini" : {
+                        type: "file",
+                        name: "Progman.ini",
+                        content: "[Groups]\nGroup1=C:/WINDOWS/PROGRAMS.GRP\nGroup2=C:/WINDOWS/ACCESSOR.GRP\nGroup3=C:/WINDOWS/DESKTOP.GRP\nGroup4=C:/WINDOWS/SYSTEMTO.GRP\nGroup5=C:/WINDOWS/DOCUMENT.GRP\nGroup6=C:/WINDOWS/MAIN.GRP\n\n[Settings]\nOrder= 5 1 2 3 4 6\ndisplay.drv=pnpdrvr.drv\nWindow=68 66 548 387 1\n"
                     },
                     "Readme.txt": {
                         type: "file",
@@ -198,11 +238,11 @@ const FS = {
         };
         const dirName = path.pop();
         const currDir = path.length === 0 ? FS["$"] : this.resolvePath(path);
+        if (!currDir) return false;
         if (currDir.child[dirName] && currDir.child[dirName].type === "dir"){
             console.error(`[FS][makeDir]["${currDir.name}"] La carpeta "${dirName}" ya existe`);
             return false;
         }
-        if (!currDir) return false;
         currDir.child[dirName] = {type:"dir",name:dirName,child:{}};
         this.save();
         Desktop.refresh();
@@ -316,7 +356,6 @@ const FS = {
         if (loadedFS) this["$"] = JSON.parse(loadedFS);
         return true;
     }
-    // TODO: Hacer metodo eliminación de elementos
 }
 // console.log(JSON.stringify(FS["$"], null, 4));
 // FS.makeDir("damns")

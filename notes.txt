@@ -4,10 +4,12 @@
 Quizás añadir RegEdit para los programas por defecto de cada extensión (otro JSON más XDD)
 Agregar arrastrado de los íconos del desktop (y guardar su posición en desktop)
 Agregar enteros "FS.ERROR_*" y que las funciones devuelvan eso en vez de "false" (debugging hell yeah📈)
-Que los programas sean un JSON con:
-- ícono (ruta o base64☠)
-- acción en comando (ej: notepad.exe)
+Que los programas (.exe) sean un JSON con:
+- íconos (ruta o base64☠)
+- el código (más abajo para más info)
 - nada mas we
+Crear un programa que permita simular una arquitectura basada en bytes (literal un emulador de una arquitectura ficticia dentro de Windows12) (aka DOSBox de bajo presupuesto)
+Usar sonidos al startup, y al tener mensajes de error
 
 ### DUDAS ###
 
@@ -23,14 +25,81 @@ Que los programas sean un JSON con:
 
 - Hacer que al tocar el nombre de un icono en desktop y quedarse un tiempo haga activar el renombrado
 
-### DUDAS MAS IMPORTANTE ###
-- Si llegamos a hacer un programa que ejecute un assembly creado por mi (obviamente sería opcional, los programas verdaderos serían strings de comandos)... ¿debería hacer que los archivos sean bytes, verdad?? Entonces... ¿hacemos ese cambio??
-Si llego a hacer que los archivos sean bytes, ahora vienen estas preguntas:
-- ¿Cómo hago un "array de bytes" en JS??? ¿Literal un `[0x01, 0x02, 0x03]` o hay maneras más "optimizadas" o algo que no conoca??
-- Para más comodidad en archivos normales, haría una funcion auxiliar "StringToBytes()" que, como dice el nombre, transforme todo a bytes, y quizás otra función "BytesToString()" y así jeje
+- ¿Un archivo "C:/Window/System/User32.dll" bien hecho con toda la funcionalidad de WindowManager.createWindow() pero en OPCODEs... ¿sería literalmente independiente?? osea, la clase JS queda inutil XDD
 
-- ¿"/" o "\"?????
+### "CÓDIGO" ###
+Mi idea es esta:
+[OPCODE, args o otro OPCODE...]
+Seh, muy simple, ¡PERO!... Da MUCHISIMA recursividad como un lenguaje real, osea, imaginate esto:
+```
+[
+    ["IF", ["GT", ["INT", ["PROMPT", "Tu edad:"]], 18], // if (prompt("Tu edad:") > 18){...}
+        ["ALERT", "Acceso Concedido", "Bienvenido pa"],
+        ["ALERT", "Acceso Denegado", "Ehhhhh anda a estudiar chamaco mocoso"]
+    ]
+]
+```
 
-- ¿Implementamos .dll que puedan tener íconos dentro???
+Y si añado la posibilidad de importar funciones externas (OPCODE "IMPORT" o "INCLUDE"), podría hacer algo así:
+```
+[
+    ["#INCLUDE", "C:/WINDOWS/SYSTEM/USER32.DLL"],
+    ["F_MESSAGE_BOX", "Titulo", "El Hola Mundo más raro que verás..."]
+]
+```
+Y "USER32.DLL" tendría *algo así*
+```
+[
+    ["SET","WS_BTN_CLOSE",         1 << 0],
+    ["SET","WS_BTN_MAX",           1 << 1],
+    ["SET","WS_BTN_MIN",           1 << 2],
+    ["SET","WS_TITLEBAR",          1 << 3],
+    ["SET","WS_RESIZABLE",         1 << 4],
+    ["SET","WS_NO_TASKBAR",        1 << 5],
+    ["SET","WS_OVERLAPPEDWINDOW", 0b11111],
+    ["SET","WS_POPUP_WINDOW",     0b01001],
+    ["FUNCTION", "MESSAGE_BOX", ["title", "msg"],
+        [
+            ["SET", "contentDiv", ["DOM_CREATE_ELEMENT", "div"]],
+            ["DOM_SET_TEXT_CONTENT", ["VAR","contentDiv"], ["${msg}"]]
+            ["F_CREATE_WINDOW",
+                ["${title}"],
+                ["VAR", "contentDiv"],
+                ["VAR", "WS_POPUP_WINDOW"],
+                "50%", "50%",
+                ["translate(-50%,-50%)"],
+                "80%",
+                "auto",
+                true
+            ]
+        ]
+    ],
+    ["FUNCTION", "CREATE_WINDOW", ["title","content","styles","x","y","transform","width","height","obligatory"],
+        [
+            // HERMANO, si llego a terminar esto, y hago las mismas funciones DOM para este lenguaje... diría que "WindowManager" quedaría sin utilildad ya que esto lo haría JAJAJJAJAJA (me siento Macrosoft....🗿🚬)
+        ]
+    ]
+]
+```
+..... ¿esto sigue siendo una simulación o una demostración de que tengo demasiado tiempo libre?? 😭😭😭💔💔💔
 
-(c) Copiryght 12steve (yo) 2026-2026
+### NOTAS (literal XD) ###
+El efecto doble click y llamar a procManager es debug todavía, tengo que manejar bien eso con el regedit para saber qué aplicación usar con cada extensión (me tocará hacer el bloc de notas💔💔💔)
+
+### TO-DO's ###
+// TODO: Crear un C:/Windows/System/User32.dll con MessageBox y CreateWindow.
+// TODO: Crear OPCODE "IMPORT" para usar .dll's
+// TODO: Crear OPCODES que creen y manipulen DOM (para librerias "bajo nivel")
+// TODO: Hacer que las opciones de contextmenu en archivos, carpetas y desktop sean dinamicas por el regedit
+// TODO: Hacer que los .exe sean:
+{
+    icons: {},
+    code: [OPCODES...],
+    nadaMasWe: "nadaMasWe"
+}
+// TODO: Permitir íconos a las ventanas (duda: ¿se ponen en runtime o al crear la ventana???)
+
+### DUDA MAS IMPORTANTE DE TODAS ###
+***¿Usarías Windows12 como OS de preferencia? 🗿🚬***
+
+(c) Copiryght 12steve (yo) 2026-2025

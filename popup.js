@@ -9,10 +9,7 @@ const Popup = {
     ICON_DENIED: "icons/-.png",
     TYPE_OK: 10,
     TYPE_OK_CANCEL: 11,
-
-    // TODO: Añadir botones "Aceptar" y "Cancelar"
-    // TODO: "Cancelable" es para que haya un backdrop detrás del popup que no deje continuar hasta que se confirme el popup
-    // TODO: Función close() o algo para cerrar el popup
+    
     showAlert(obj){
         /*
         ### SINTAXIS ###

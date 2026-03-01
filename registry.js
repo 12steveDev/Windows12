@@ -5,7 +5,10 @@ const Registry = {
     hives: {
         HKEY_CLASSES_ROOT: {
             ".dll": { "@": "dllfile" },
-            ".txt": { "@": "txtfile" },
+            ".txt": {
+                "@": "txtfile",
+                "ShellNew": { "@NullFile": "" }
+            },
             ".exe": { "@": "exefile" },
             "dllfile": {
                 "@": "Application Extension",
@@ -68,6 +71,66 @@ const Registry = {
             "PerfStats": {},
         },
     },
+    splitPath(path){
+        return path.split("/").filter(p=>p&&!(p.startsWith("@"))); // ! OJO, la ruta no puede tener "@"
+    },
+    resolvePath(path){
+        if (Array.isArray(path)) path = path.join("/"); // Convertir la ruta de array a string
+        path = this.splitPath(path);
+        let currDir = this.hives;
+        for (const dir of path){
+            if (!currDir[dir]){
+                console.error(`[Registry][resolvePath] The key "${dir}" does not exist`);
+                return false;
+            }
+            currDir = currDir[dir];
+        }
+        return currDir;
+    },
+    setKeyValue(keyPath, name, data){
+        const key = this.resolvePath(keyPath);
+        if (!key) return false;
+        key[`@${name}`] = data;
+        return true;
+    },
+    getKeyValue(keyPath, name){
+        const key = this.resolvePath(keyPath);
+        if (!key) return false;
+        return key[`@${name}`];
+    },
+    createKey(path){
+        path = this.splitPath(path);
+        if (path.length === 0){
+            console.error(`[Registry][createKey] The path is empty (${path})`);
+            return false;
+        }
+        const name = path.pop();
+        const currDir = path.length === 0 ? this.hives : this.resolvePath(path);
+        if (currDir[name]){
+            console.error(`The key "${name}" already exists`);
+            return false;
+        }
+        currDir[name] = {};
+    },
+    deleteKeyValue(keyPath, name){
+        const key = this.resolvePath(keyPath);
+        if (!key) return false;
+        delete key[`@${name}`];
+    },
+    deleteKey(path){
+        path = this.splitPath(path);
+        if (path.length === 0){
+            console.error(`[Registry][deleteKey] The path is empty (${path})`);
+            return false;
+        }
+        const name = path.pop();
+        const currDir = path.length === 0 ? this.hives : this.resolvePath(path);
+        if (!currDir[name]){
+            console.error(`[Registry][deleteKey] The key "${name}" already not exists`);
+            return false;
+        }
+        delete currDir[name];
+    },
     createWindow(){
         const baseContent = E("div");
         baseContent.style.height = "100%";
@@ -104,7 +167,38 @@ const Registry = {
             content: baseContent,
             styles: WindowManager.WS_OVERLAPPEDWINDOW,
             width: "600px",
-            height: "350px"
+            height: "350px",
+            menu: {
+                "Registry": [
+                    { label: "Import Registry File...", action: ()=>{} },
+                    { label: "Export Registry File...", action: ()=>{} },
+                    { separator: true },
+                    { label: "Print...", action: ()=>{} },
+                    { separator: true },
+                    { label: "Exit", action: ()=>WindowManager.removeWindow(baseContent) }
+                ],
+                "Edit": [
+                    { label: "New >", action: ()=>{} },
+                    { separator: true },
+                    { label: "Delete", action: ()=>{} },
+                    { label: "Rename", action: ()=>{} },
+                    { separator: true },
+                    { label: "Find...", action: ()=>{} },
+                    { label: "Find Next", action: ()=>{} }
+                ],
+                "View": [
+                    { label: "Status Bar", checkbox: true, action: ()=>{} },
+                    { separator: true },
+                    { label: "Split", action: ()=>{} },
+                    { separator: true },
+                    { label: "Refresh", action: ()=>{} }
+                ],
+                "Help": [
+                    { label: "Help Topics", action: ()=>{} },
+                    { separator: true },
+                    { label: "About Registry Editor", action: ()=>{} }
+                ]
+            }
         });
     },
     createTableRow(key, val){
@@ -124,7 +218,6 @@ const Registry = {
     },
     updateDisplayTable(data, table){
         const body = $("tbody", table);
-        console.log(table, body)
         body.innerHTML = "";
         Object.entries(data).filter(kv => kv[0].startsWith("@")).forEach(([key, val])=>{
             body.appendChild(this.createTableRow(key, val));
