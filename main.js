@@ -1,5 +1,8 @@
 // main.js
+Settings.init();
 ContextMenu.init();
 FS.init();
-Settings.init();
+Registry.init();
 Desktop.init();
+
+Registry.createWindow();

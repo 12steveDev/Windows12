@@ -4,12 +4,49 @@ const Registry = {
     panelsGap: "6px",
     hives: {
         HKEY_CLASSES_ROOT: {
+            "*": {
+                "shellex": {
+                    "PropertySheetHandlers": {
+                        "{3EA48300-8CF6-101B-84FB-666CCB9BCD32}": { "@": "" }
+                    }
+                }
+            },
             ".dll": { "@": "dllfile" },
+            ".lnk": {
+                "@": "lnkfile",
+                "@Command": "C:/WINDOWS/rundll32.exe AppWiz.Cpl,NewLinkHere %1" // jaja, ¿recreo esto tambien? :'v
+            },
+            ".reg": { "@": "regfile" },
+            ".sys": { "@": "sysfile" },
             ".txt": {
                 "@": "txtfile",
                 "ShellNew": { "@NullFile": "" }
             },
             ".exe": { "@": "exefile" },
+            "CLSID": {}, // XDXDDDDDD // ! qué es esto!??
+            "Directory": {
+                "@": "File Folder",
+                "@AlwaysShowExt": "",
+                "@EditFlags": "d2 01 00 00",
+                "DefaultIcon": { "@": "C:/WINDOWS/SYSTEM/shell32.dll,3" },
+                "shell": {
+                    "@": "",
+                    "find": {
+                        "@": "",
+                        "command": { "@": "C:/WINDOWS/Explorer.exe" },
+                        "ddeexec": {
+                            "@": "[FindFolder(\"%I\", %I)]",
+                            "application": { "@": "Folders" },
+                            "topic": { "@": "AppProperties" }
+                        }
+                    }
+                },
+                "shellex": {
+                    "CopyHookHandlers": {
+                        "FileSystem": { "@": "{217FC9C0-3AEA-1069-A2DB-08002B30309D}" }
+                    }
+                }
+            },
             "dllfile": {
                 "@": "Application Extension",
                 "@AlwaysShowExt": "",
@@ -21,7 +58,10 @@ const Registry = {
                 "@EditFlags": "d8 07 00 00",
                 "DefaultIcon": { "@": "%1" },
                 "shell": {
+                    "@": "",
                     "open": {
+                        "@": "",
+                        "@EditFlags": "00 00 00 00",
                         "command": { "@": "\"%1\" %*" }
                     }
                 },
@@ -31,9 +71,82 @@ const Registry = {
                     }
                 }
             },
+            "Folder": {
+                "@": "Folder",
+                "@EditFlags": "d2 01 00 00",
+                "DefaultIcon": { "@": "C:/WINDOWS/SYSTEM/shell32.dll,3" },
+                "shell": {
+                    "@": "",
+                    "explore": {
+                        "@": "", // ! ¿porqué unos tienen ""?? ¿va a salir sin nombre!???
+                        "command": {
+                            "@": "C:/WINDOWS/Explorer.exe /e,/idlist,%I,%L", // ! ¿qué es esto?
+                        },
+                        "ddeexec": { // ! ¿y todo esto!?
+                            "@": "[ExplorerFolder(\"%I\", %I, %S)]",
+                            "@NoActivateHandler": "",
+                            "application": { "@": "Folders" },
+                            "ifexec": { "@": "[]" },
+                            "topic": { "@": "AppProperties" }
+                        }
+                    },
+                    "open": {
+                        "@": "",
+                        "command": {
+                            "@": "C:/WINDOWS/Explorer.exe /idlist,%I,%L", // ! %I es flag de el explorer o del idlist!??
+                        },
+                        "ddeexec": {
+                            "@": "[ViewFolder(\"%I\", %I, %S)]",
+                            "@NoActivateHandler": "",
+                            "application": { "@": "Folders" },
+                            "ifexec": { "@": "[]" },
+                            "topic": { "@": "AppProperties" }
+                        }
+                    }
+                }
+            },
+            "lnkfile": {
+                "@": "Shortcut",
+                "@EditFlags": "01 00 00 00",
+                "@IsShortcut": "",      // borrar esto para quitar la flechita del shortcut 🗣🗣🗣
+                "@NewerShowExt": "",
+                "CLSID": { "@": "{00021401-0000-0000-C000-000000000046}" },
+                "shellex": {
+                    "ContextMenuHandlers": {
+                        "{00021401-0000-0000-C000-000000000046}": { "@": "" }
+                    },
+                    "DropHandler": { "@": "{00021401-0000-0000-C000-000000000046}" },
+                    "IconHandler": { "@": "{00021401-0000-0000-C000-000000000046}" }
+                }
+            },
+            "regfile": {
+                "@": "Registration Entries",
+                "DefaultIcon": { "@": "C:/WINDOWS/regedit.exe,1" },
+                "shell": {
+                    "@": "",
+                    "edit": {
+                        "@": "&Edit",
+                        "command": { "@": "C:/WINDOWS/NOTEPAD.EXE %1" }
+                    },
+                    "open": {
+                        "@": "Mer&ge",
+                        "command": { "@": "regedit.exe %1" }
+                    },
+                    "print": {
+                        "@": "",
+                        "command": { "@": "C:/WINDOWS/NOTEPAD.EXE /p %1" }
+                    }
+                }
+            },
+            "sysfile": {
+                "@": "System File",
+                "@AlwaysShowExt": "",
+                "@EditFlags": "01 00 00 00",
+                "DefaultIcon": { "@": "C:/WINDOWS/SYSTEM/shell32.dll,-154" }
+            },
             "txtfile": {
                 "@": "Text Document",
-                "DefaultIcon": { "@": "C:/WINDOWS/SYSTEM/shell32.dll,-152" }, // jaja, ¿recreo esto tambien?
+                "DefaultIcon": { "@": "C:/WINDOWS/SYSTEM/shell32.dll,-152" },
                 "shell": {
                     "open": {
                         "command": { "@": "C:/WINDOWS/NOTEPAD.EXE %1" }
@@ -56,7 +169,18 @@ const Registry = {
             "Enum": {},
             "hardware": {},
             "Security": {},
-            "SOFTWARE": {},
+            "SOFTWARE": {
+                "Classes": "this gonna be updated by Registry.init()",
+                "Microsoft": { // tendré problemas legales por usar su nombre?
+                    "Windows": {
+                        "CurrentVersion": {
+                            "explorer": {
+
+                            }
+                        }
+                    }
+                }
+            },
             "System": {}
         },
         HKEY_USERS: {
@@ -142,7 +266,7 @@ const Registry = {
         baseContent.style.gap = this.panelsGap;
 
         const displayDiv = E("div");
-        displayDiv.classList.add("w95-blank");
+        displayDiv.classList.add("w95-blank", "w95-scroll");
         displayDiv.style.height = "100%";
         displayDiv.style.width = "100%";
         displayDiv.style.overflow = "auto";
@@ -153,7 +277,7 @@ const Registry = {
         const treeView = E("div");
         treeView.style.width = "100%";
         treeView.style.height = "100%";
-        treeView.classList.add("w95-blank");
+        treeView.classList.add("w95-blank", "w95-scroll");
         treeView.style.overflow = "auto";
         treeView.appendChild(this.createRegistryTree(this.hives, "My Computer", $(".w95-table", displayDiv)));
         $("img", treeView).src = "images/icons/computer.png";
@@ -170,8 +294,8 @@ const Registry = {
             height: "350px",
             menu: {
                 "Registry": [
-                    { label: "Import Registry File...", action: ()=>{} },
-                    { label: "Export Registry File...", action: ()=>{} },
+                    { label: "Import Registry File...", action: ()=>{} }, // TODO: implementar esto (responder la DUDA del notes.txt primero!)
+                    { label: "Export Registry File...", action: ()=>{} }, // TODO: y esto 
                     { separator: true },
                     { label: "Print...", action: ()=>{} },
                     { separator: true },
@@ -233,12 +357,15 @@ const Registry = {
             details.classList.add("w95-details");
             const summary = E("summary");
             summary.classList.add("key");
-            summary.onclick = ()=> this.updateDisplayTable(data, table);
             const sumImg = E("img");
             sumImg.src = "images/icons/folder.png";
             const sumP = E("p");
             sumP.textContent = path;
             sumP.tabIndex = -1;
+            sumP.onclick = (e)=>{ // al tocar el nombre, actualiza el panel de data pero no abre el details
+                e.preventDefault();
+                this.updateDisplayTable(data, table)
+            }
             summary.appendChild(sumImg);
             summary.appendChild(sumP);
             details.appendChild(summary);
@@ -246,8 +373,8 @@ const Registry = {
             for (const [key, value] of Object.entries(data)){
                 if (key.startsWith("@")) continue; // El valor se muestra aparte
                 const childDiv = E("div");
-                childDiv.style.marginLeft = "22px";
-                if (isObj(value) && Object.keys(value).length > 0 && !(Object.keys(value).length === 1 && value["@"])){ // me encanta el espagetti 🗣🗣📉📉📉📉
+                childDiv.style.marginLeft = "21px"; // Espacio relativo a su posición dentro del arbol
+                if (isObj(value) && Object.keys(value).length > 0 && !(Object.keys(value).every(k => k.startsWith("@")))){ // me encanta el espagetti 🗣🗣📉📉📉📉
                     childDiv.appendChild(this.createRegistryTree(value, key, table));
                 } else {
                     const itemDiv = E("div");
@@ -286,5 +413,8 @@ const Registry = {
             </tbody>
         </table>`
         return table;
+    },
+    init(){
+        this.hives.HKEY_LOCAL_MACHINE["SOFTWARE"]["Classes"] = this.hives.HKEY_CLASSES_ROOT;
     }
 }

@@ -1,4 +1,4 @@
-# notes.txt
+# notes.txt (esto tiene de todo menos notas 🥀)
 
 ### IDEAS ###
 Quizás añadir RegEdit para los programas por defecto de cada extensión (otro JSON más XDD)
@@ -27,6 +27,10 @@ Usar sonidos al startup, y al tener mensajes de error
 
 - ¿Un archivo "C:/Window/System/User32.dll" bien hecho con toda la funcionalidad de WindowManager.createWindow() pero en OPCODEs... ¿sería literalmente independiente?? osea, la clase JS queda inutil XDD
 
+- Si llego a implementar archivos.reg, ¿Contendrían la sintaxis del regedit.exe real (header y [] y @="...") o solo sería un objeto ({}) stringifyeado que se carga en Registry.hives????
+
+- ¿qué chingao es CLSID y para que sirve!??? he hecho casi un ecosistema completo y no se eso 😭😭😭
+
 ### "CÓDIGO" ###
 Mi idea es esta:
 [OPCODE, args o otro OPCODE...]
@@ -47,7 +51,7 @@ Y si añado la posibilidad de importar funciones externas (OPCODE "IMPORT" o "IN
     ["F_MESSAGE_BOX", "Titulo", "El Hola Mundo más raro que verás..."]
 ]
 ```
-Y "USER32.DLL" tendría *algo así*
+Y un "USER32.DLL" tendría *algo así*
 ```
 [
     ["SET","WS_BTN_CLOSE",         1 << 0],
@@ -87,10 +91,10 @@ Y "USER32.DLL" tendría *algo así*
 El efecto doble click y llamar a procManager es debug todavía, tengo que manejar bien eso con el regedit para saber qué aplicación usar con cada extensión (me tocará hacer el bloc de notas💔💔💔)
 
 ### TO-DO's ###
+// TODO (Urgente): Hacer que las opciones de contextmenu en archivos, carpetas y desktop sean dinamicas por el regedit
 // TODO: Crear un C:/Windows/System/User32.dll con MessageBox y CreateWindow.
 // TODO: Crear OPCODE "IMPORT" para usar .dll's
 // TODO: Crear OPCODES que creen y manipulen DOM (para librerias "bajo nivel")
-// TODO: Hacer que las opciones de contextmenu en archivos, carpetas y desktop sean dinamicas por el regedit
 // TODO: Hacer que los .exe sean:
 {
     icons: {},
@@ -99,7 +103,21 @@ El efecto doble click y llamar a procManager es debug todavía, tengo que maneja
 }
 // TODO: Permitir íconos a las ventanas (duda: ¿se ponen en runtime o al crear la ventana???)
 
+### PASOS PARA AÑADIR UN PROGRAMA ###
+1. Haz la idea en notes.txt
+2. Haz una constante a un objeto simulando una Clase XD
+3. Pon todos los métodos útiles (e inútiles jeje)
+4. Verifica que no de errores en la consola (obvio)
+5. Abre el bloc de notas de Windows12 (si llega a existir :'v)
+6. Comienza a "traducir" todo ese JavaScript bonito a OPCODEs más bonitos
+7. Renombra el archivo a ".exe" (aka .txt pero maquillado 💅💋)
+8. Borra el JavaScript obsoleto
+9. Recarga la página si quieres (no lo hagas w, se actualiza todo solo)
+10. Reza por que no te hayas confundido en algun argumento de un OPCODE
+11. Mira a tu chico malo ejecutarce 🐎🔥
+12. Y disfruta! (parece receta de la abuela XDXDD)
+
 ### DUDA MAS IMPORTANTE DE TODAS ###
 ***¿Usarías Windows12 como OS de preferencia? 🗿🚬***
 
-(c) Copiryght 12steve (yo) 2026-2025
+(c) Copiryght 12steve (yo) 1945-2001
