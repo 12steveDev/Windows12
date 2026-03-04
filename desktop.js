@@ -10,16 +10,15 @@ const Desktop = {
             styles: WindowManager.WS_OVERLAPPEDWINDOW
         });
     },
-    createHTMLIcon(appName, appIcon, link=false){
+    createHTMLIcon(appName, appIcon){
         const appDiv = E("div");
         
         const iconImg = E("img");
-        iconImg.src = "images/" + appIcon;
+        iconImg.src = appIcon; // hermano, ya sé que podría añadir un fallback "|| 'images/icons/unknown.png'"... ¿pero qué tiene de divertido un OS que no se puede crashear visualmente!?? no somos Windows10-11 we
         appDiv.appendChild(iconImg);
         
         const nameP = E("p");
         nameP.textContent = appName;
-        if (link) nameP.innerHTML += " <span style='color: #b0f'>(link)</span>"; // !!! DEBUG/TEMPORARY !!! //
         nameP.style.color = Settings.get("desktopColor");
         nameP.style.fontSize = Settings.get("desktopFontSize");
         appDiv.appendChild(nameP);
@@ -67,9 +66,17 @@ const Desktop = {
         // Cargar íconos del desktop
         const desktopItems = FS.list("Windows/Desktop", FS.LIST_MODE_ALL);
         desktopItems.forEach(item => {
-            let itemDiv;
+            // console.log(item)
+            const prefs = Registry.getExtPrefs(item, `C:/Windows/Desktop/${item.name}`);
+            //// console.log(`Prefs of ${item.name}:`, prefs);
+            const itemDiv = this.createHTMLIcon(prefs.name, prefs.icon);
+            itemDiv.addEventListener("contextmenu", (e)=>{
+                e.preventDefault();
+                e.stopPropagation();
+                ContextMenu.show(e.clientX, e.clientY);
+            })
+            // TODO: Hacer que esto se cree en Registry.getExtPrefs() (shells dinamicos, hell yea🦅🦅🔥🔥)
             if (item.type === "file"){
-                itemDiv = this.createHTMLIcon(item.name, item.icon || "icons/textFile.png");
                 itemDiv.addEventListener("contextmenu", (e)=>{
                     e.preventDefault();
                     e.stopPropagation();
@@ -78,6 +85,8 @@ const Desktop = {
                         // Ni crean que voy a implementar todo esto >:v
                         { label: "Open", action: ()=>{ProcessManager.createProcess(`C:/Windows/Desktop/${item.name}`)} },
                         { label: "Print", action: ()=>{} },
+                        // TODO [DEBUG]: no lloren, esto es debug hasta que exista notepad.exe XDDD
+                        { label: "Escribir", action:()=>{FS.writeFile(`C:/Windows/Desktop/${item.name}`, prompt(`[prompt feo]\nContenido:`, FS.readFile(`C:/Windows/Desktop/${item.name}`)))} },
                         { separator: true },
                         { label: "Send To     >", action: ()=>{} },
                         { separator: true },
@@ -104,7 +113,6 @@ const Desktop = {
                 })
             }
             if (item.type === "dir"){
-                itemDiv = this.createHTMLIcon(item.name, item.icon || "icons/folder.png");
                 itemDiv.addEventListener("contextmenu", (e)=>{
                     e.preventDefault();
                     e.stopPropagation();
@@ -138,38 +146,38 @@ const Desktop = {
                     ])
                 })
             }
-            if (item.type === "link"){
-                itemDiv = this.createHTMLIcon(item.name, item.icon || "icons/textFile.png", link=true);
-                itemDiv.addEventListener("contextmenu", (e)=>{
-                    e.preventDefault();
-                    e.stopPropagation();
-                    ContextMenu.show(e.clientX, e.clientY, [
-                        { label: "Open", action: ()=>{} },
-                        { separator: true },
-                        { label: "Send To     >", action: ()=>{} },
-                        { separator: true },
-                        { label: "Cut", action: ()=>{} },
-                        { label: "Copy", action: ()=>{} },
-                        { separator: true },
-                        { label: "Create Shortcut", action: ()=>{} },
-                        { label: "Delete", action: ()=>Popup.showAlert({
-                            title: "Confirm File Delete",
-                            content: `Are you sure you want to send '${item.name}' to the Recycle Bin?`,
-                            icon: "icons/recycleFile.png",
-                            buttons: [
-                                { label: "Yes", action: ()=> FS.remove(`Windows/Desktop/${item.name}`) },
-                                { label: "No", action: ()=> {} }
-                            ],
-                            obligatory: true
-                        }) },
-                        { label: "Rename", action: ()=>{
-                            this.renameInPlace(itemDiv, item);
-                        } },
-                        { separator: true },
-                        { label: "Properties", action: ()=>{} },
-                    ])
-                })
-            }
+            // if (item.type === "link"){ // (los shortcuts son simplemente archivos pero .lnk :v)
+            //     itemDiv = this.createHTMLIcon(item.name, item.icon || "icons/textFile.png", link=true);
+            //     itemDiv.addEventListener("contextmenu", (e)=>{
+            //         e.preventDefault();
+            //         e.stopPropagation();
+            //         ContextMenu.show(e.clientX, e.clientY, [
+            //             { label: "Open", action: ()=>{} },
+            //             { separator: true },
+            //             { label: "Send To     >", action: ()=>{} },
+            //             { separator: true },
+            //             { label: "Cut", action: ()=>{} },
+            //             { label: "Copy", action: ()=>{} },
+            //             { separator: true },
+            //             { label: "Create Shortcut", action: ()=>{} },
+            //             { label: "Delete", action: ()=>Popup.showAlert({
+            //                 title: "Confirm File Delete",
+            //                 content: `Are you sure you want to send '${item.name}' to the Recycle Bin?`,
+            //                 icon: "icons/recycleFile.png",
+            //                 buttons: [
+            //                     { label: "Yes", action: ()=> FS.remove(`Windows/Desktop/${item.name}`) },
+            //                     { label: "No", action: ()=> {} }
+            //                 ],
+            //                 obligatory: true
+            //             }) },
+            //             { label: "Rename", action: ()=>{
+            //                 this.renameInPlace(itemDiv, item);
+            //             } },
+            //             { separator: true },
+            //             { label: "Properties", action: ()=>{} },
+            //         ])
+            //     })
+            // }
             itemDiv.classList.add("desktopIcon");
             itemDiv.tabIndex = -1; // para permitir el ":focus" de los iconos
             desktop.appendChild(itemDiv);

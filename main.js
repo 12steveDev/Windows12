@@ -5,4 +5,4 @@ FS.init();
 Registry.init();
 Desktop.init();
 
-Registry.createWindow();
+// Registry.createWindow();

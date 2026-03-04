@@ -1,5 +1,6 @@
 // registry.js (mi archivo favorito btw XDD)
 const Registry = {
+    LOCAL_STORAGE: "__windows12_registry__",
     panelsDivision: "40% 60%",
     panelsGap: "6px",
     hives: {
@@ -23,7 +24,62 @@ const Registry = {
                 "ShellNew": { "@NullFile": "" }
             },
             ".exe": { "@": "exefile" },
-            "CLSID": {}, // XDXDDDDDD // ! qué es esto!??
+            "CLSID": {// XDXDDDDDD // ! qué es esto!??
+                "{00021401-0000-0000-C000-000000000046}": {
+                    "@": "Shortcut",
+                    "InProcServer32": {
+                        "@": "shell32.dll",
+                        "@ThreadingModel": "Apartment"
+                    },
+                    "shellex": {
+                        "MayChangeDefaultMenu": { "@": "" }
+                    }
+                },
+                "{217FC9C0-3AEA-1069-A2DB-08002B30309D}": {
+                    "@": "Shell Copy Hook",
+                    "InProcServer": {
+                        "@": "shell32.dll",
+                        "@ThreadingModel": "Apartment"
+                    }
+                },
+                "{3EA48300-8CF6-101B-84FB-666CCB9BCD32}": {
+                    "@": "OLE Docfile Property Page",
+                    "InProcServer32": {
+                        "@": "C:/WINDOWS/SYSTEM/docprop.dll",
+                        "@ThreadingModel": "Apartment"
+                    }
+                },
+                "{645FF040-5081-101B-9F08-00AA002F954E}": {
+                    "@": "Recycle Bin",
+                    "DefaultIcon": {
+                        "@": "C:/WINDOWS/SYSTEM/shell32.dll,32",
+                        "Empty": "C:/WINDOWS/SYSTEM/shell32.dll,31",
+                        "Full": "C:/WINDOWS/SYSTEM/shell32.dll,32"
+                    },
+                    "InProcServer32": {
+                        "@": "shell32.dll",
+                        "@ThreadingModel": "Apartment"
+                    },
+                    "shellex": {
+                        "ContextMenuHandlers": {
+                            "{645FF040-5081-101B-9F08-00AA002F954E}": { "@": "" }
+                        },
+                        "PropertySheetHandlers": {
+                            "{645FF040-5081-101B-9F08-00AA002F954E}": { "@": "" }
+                        }
+                    },
+                    "ShellFolder": {
+                        "@Attributes": "40 01 00 20"
+                    }
+                },
+                "{86F19A00-42A0-1069-A2E9-08002B30309D}": {
+                    "@": ".PIF file property pages",
+                    "InProcServer32": {
+                        "@": "shell32.dll",
+                        "@ThreadingModel": "Apartment"
+                    }
+                }
+            },
             "Directory": {
                 "@": "File Folder",
                 "@AlwaysShowExt": "",
@@ -67,7 +123,7 @@ const Registry = {
                 },
                 "shellex": {
                     "PropertySheetHandlers": {
-                        "{86F19A00-42A0-1068-A2E9-08002B30309D}": { "@": "" }
+                        "{86F19A00-42A0-1069-A2E9-08002B30309D}": { "@": "" }
                     }
                 }
             },
@@ -105,12 +161,13 @@ const Registry = {
                     }
                 }
             },
-            "lnkfile": {
+            "lnkfile": { // PORFAVOR, UN ACCESO DIRECTO NO ES UN TIPO MAGICO DE ARCHIVO, ES UNA PINCHE EXTENSIÓN
                 "@": "Shortcut",
                 "@EditFlags": "01 00 00 00",
                 "@IsShortcut": "",      // borrar esto para quitar la flechita del shortcut 🗣🗣🗣
-                "@NewerShowExt": "",
+                "@NeverShowExt": "", // aquí antes había puesto "NewerShowExt"😭😭😭😭 (typo)
                 "CLSID": { "@": "{00021401-0000-0000-C000-000000000046}" },
+                "DefaultIcon": {"@": "C:/windows/system/shell32.dll,29"}, // TODO: dejar de ser burro y implementar IconHandler en lugar de usar esta línea (no está en el win95 original)
                 "shellex": {
                     "ContextMenuHandlers": {
                         "{00021401-0000-0000-C000-000000000046}": { "@": "" }
@@ -155,6 +212,14 @@ const Registry = {
                         "command": { "@": "C:/WINDOWS/NOTEPAD.EXE /p %1" }
                     }
                 }
+            },
+            "Unknown": {
+                "@AlwaysShowExt": "",
+                "shell": {
+                    "openas": {
+                        "command": { "@": "C:/WINDOWS/rundll32.exe shell32.dll,OpenAs_RunDLL %1" }
+                    }
+                }
             }
         },
         HKEY_CURRENT_USER: {
@@ -195,19 +260,24 @@ const Registry = {
             "PerfStats": {},
         },
     },
+    save(){
+        localStorage.setItem(this.LOCAL_STORAGE, JSON.stringify(this.hives));
+    },
     splitPath(path){
-        return path.split("/").filter(p=>p&&!(p.startsWith("@"))); // ! OJO, la ruta no puede tener "@"
+        return path.replace("%HKCR%", "HKEY_CLASSES_ROOT").split("/").filter(p=>p&&!(p.startsWith("@"))); // ! OJO, la ruta no puede tener "@"
     },
     resolvePath(path){
         if (Array.isArray(path)) path = path.join("/"); // Convertir la ruta de array a string
         path = this.splitPath(path);
+        let last = "hives";
         let currDir = this.hives;
         for (const dir of path){
             if (!currDir[dir]){
-                console.error(`[Registry][resolvePath] The key "${dir}" does not exist`);
-                return false;
+                console.error(`[Registry][resolvePath][${last}] The key "${dir}" does not exist`);
+                return null;
             }
             currDir = currDir[dir];
+            last = dir;
         }
         return currDir;
     },
@@ -215,11 +285,12 @@ const Registry = {
         const key = this.resolvePath(keyPath);
         if (!key) return false;
         key[`@${name}`] = data;
+        this.save();
         return true;
     },
     getKeyValue(keyPath, name){
         const key = this.resolvePath(keyPath);
-        if (!key) return false;
+        if (!key) return null;
         return key[`@${name}`];
     },
     createKey(path){
@@ -231,17 +302,19 @@ const Registry = {
         const name = path.pop();
         const currDir = path.length === 0 ? this.hives : this.resolvePath(path);
         if (currDir[name]){
-            console.error(`The key "${name}" already exists`);
+            console.error(`[Registry][createKey] The key "${name}" already exists`);
             return false;
         }
         currDir[name] = {};
+        this.save();
     },
-    deleteKeyValue(keyPath, name){
+    removeKeyValue(keyPath, name){
         const key = this.resolvePath(keyPath);
         if (!key) return false;
         delete key[`@${name}`];
+        this.save();
     },
-    deleteKey(path){
+    removeKey(path){
         path = this.splitPath(path);
         if (path.length === 0){
             console.error(`[Registry][deleteKey] The path is empty (${path})`);
@@ -254,6 +327,7 @@ const Registry = {
             return false;
         }
         delete currDir[name];
+        this.save();
     },
     createWindow(){
         const baseContent = E("div");
@@ -414,7 +488,113 @@ const Registry = {
         </table>`
         return table;
     },
+    splitCmdLineArgs(cmdLine){
+        const args = [];
+        let currArg = "";
+        let quoteMode = false;
+        let escape = false
+        for (const char of cmdLine){
+            if (escape){ // ¿hubo un "\" antes?
+                currArg += char;
+                escape = false;
+                continue;
+            } else if (char === "\\"){ // el pinche backslash jeje te kero
+                escape = true;
+            } else if (char === '"'){ // la pinshe comilla destruye-inspiración
+                if (quoteMode){
+                    args.push(currArg);
+                    currArg = "";
+                }
+                quoteMode = !quoteMode; // por momentos me siento tony stark
+            } else if (char === " "){ // el separador 🗣
+                if (quoteMode){ // dentro de las comillas puede haber espacios, obvio
+                    currArg += char;
+                } else {
+                    // quitar espacios internos
+                    if (currArg.length === 0) continue;
+                    args.push(currArg);
+                    currArg = "";
+                }
+            } else {
+                currArg += char;
+            }
+            // console.log(`(curr:${char}) ${escape?"(escape)":"        "} ${quoteMode?"(quote)":"       "}`, currArg) // descomentar para ver las entrañas de un parser, supongo XD
+        }
+        if (currArg) args.push(currArg);
+        return args;
+    },
+    replaceCommandLineArgs(str, args){
+        str = str.replace(/%\*/g, args.slice(1).join(" ") || "");
+        return str.replace(/%(\d+)/g, (match, argIndex)=>{
+            argIndex = Number(argIndex);
+            // si no existe, devuelve el "%*" literal
+            return args[argIndex] === undefined ? match : args[argIndex];
+        })
+    },
     init(){
         this.hives.HKEY_LOCAL_MACHINE["SOFTWARE"]["Classes"] = this.hives.HKEY_CLASSES_ROOT;
+        const loadedRg = localStorage.getItem(this.LOCAL_STORAGE);
+        if (loadedRg) this.hives = JSON.parse(loadedRg);
+        return true;
+    },
+    getExtPrefs(item, itemPath){ // sinceramente el método más kgao de hacer🥀
+        // (itemPath es para las acciones del contextMenu)
+        const prefs = {
+            name: null,
+            icon: null,
+            desc: null
+        };
+        //// console.log("- [name]", item.name)
+        // 1. obtener progId basado en tipo y extensión
+        let progId = null;
+        // es una carpeta
+        if (item.type === "dir"){
+            progId = "Directory"; // ? ¿Folder no sirve para nada? XD
+        } else if (item.type === "file"){
+            //obtener extensión
+            const extMatch = item.name.match(/\.[^.]+$/);
+            if (extMatch){
+                ext = extMatch[0];
+                // buscar progID de la extensión en HKEY_CLASSES_ROOT
+                const extKey = this.resolvePath(`%HKCR%/${ext}`);
+                if (extKey && extKey["@"]){
+                    progId = extKey["@"];
+                } else {
+                    // No hay asociación
+                    progId = "Unknown";
+                }
+            } else {
+                // archivo sin extensión
+                progId = "Unknown";
+            }
+        }
+        //// console.log("[progId]",progId)
+        // 2. obtener ícono (Dios tenme piedad, chingo de funciones que llaman a otras solo para un pinshe icono)
+        if (progId){
+            const iconKey = this.resolvePath(`%HKCR%/${progId}/DefaultIcon`);
+            if (iconKey && iconKey["@"]){
+                const iconPath = iconKey["@"];
+                prefs.icon = FS.getIcon(this.replaceCommandLineArgs(iconPath, ["", itemPath]));
+            }
+        }
+        // 3. resolver el nombre y descripción del tipo de archivo (del progId)
+        if (progId){
+            const progIdKey = this.resolvePath(`%HKCR%/${progId}`);
+            if (progIdKey){
+                if (progIdKey["@"]) prefs.desc = progIdKey["@"];
+                if (progIdKey["@NeverShowExt"] !== undefined){
+                    prefs.name = item.name.split(".").shift();
+                } else if (progIdKey["@AlwaysShowExt"] !== undefined){
+                    prefs.name = item.name;
+                } else {
+                    prefs.name = Settings.get("showFileExtensions") ? item.name : item.name.split(".").shift();
+                }
+            }
+        }
+        // fallbacks
+        if (!prefs.icon){
+            prefs.icon = `images/icons/${item.type === "dir" ? "folder.png" : "win95File.png"}`;
+        }
+        return prefs;
     }
 }

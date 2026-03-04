@@ -99,16 +99,15 @@ const WindowManager = {
         windowDiv.style.transition = "top 0.5s, left 0.5s, width 0.5s, height 0.5s";
         windowDiv.classList.add("maximized");
         $(".header .buttons :nth-child(2)", windowDiv).textContent = "🗗";
-        setTimeout(()=>windowDiv.style.transition = "none", 500)
+        setTimeout(()=>windowDiv.style.transition = "none", 500);
     },
     restoreWindow(windowDiv){
         windowDiv.style.transition = "top 0.5s, left 0.5s, width 0.5s, height 0.5s";
         windowDiv.classList.remove("maximized");
         $(".header .buttons :nth-child(2)", windowDiv).textContent = "🗖";
-        setTimeout(()=>windowDiv.style.transition = "none", 500)
+        setTimeout(()=>windowDiv.style.transition = "none", 500);
     },
     toggleWindow(windowDiv){
-        console.log("hey")
         if (windowDiv.classList.contains("maximized")){
             this.restoreWindow(windowDiv);
         } else {

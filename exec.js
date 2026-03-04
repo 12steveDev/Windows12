@@ -131,7 +131,7 @@ const EXEC = {
                         throw new Error(`Function "${funName}" does not exist`);
                         return;
                     }
-                    // En Windows12 tus variables están asalvo papá🗿📊📈👏
+                    // En Windows12 tus variables están a salvo papá🗿📊📈👏
                     const oldVars = {...procData.vars};
                     func.params.forEach((param, i)=>{
                         procData.vars[param] = ex(args[i+1]);

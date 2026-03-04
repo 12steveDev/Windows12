@@ -3,14 +3,17 @@ const ProcessManager = {
     procs: {},
     nextPid: 1,
     createProcess(path){
+        // TODO: Actualizar esto al nuevo formato ({icons: {}, code: []})
         const content = FS.readFile(path);
         try {
             const code = JSON.parse(content);
             const pid = this.nextPid++;
+            // TODO: Agregar los íconos que tenga al proceso (para que el programa pueda accederlos)
             const procData = {
                 pid: pid,
                 path: path,
                 vars: {},
+                funcs: {},
                 status: "running"
             }
             this.procs[pid] = procData;

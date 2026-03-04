@@ -8,129 +8,150 @@ const FS = {
         type: "dir",
         name: "$",
         child: {
-            "Dos": {
+            "DOS": {
                 type: "dir",
                 name: "Dos",
                 child: {}
             },
-            "Program Files": {
+            "PROGRAM FILES": {
                 type: "dir",
                 name: "Program Files",
                 child: {}
             },
-            "Windows": {
+            "WINDOWS": {
                 type: "dir",
                 name: "Windows",
                 child: {
-                    "Command": {
+                    "COMMAND": {
                         type: "dir",
                         name: "Command",
                         child: {}
                     },
-                    "Desktop": {
+                    "DESKTOP": {
                         type: "dir",
                         name: "Desktop",
                         child: {
-                            "My Computer": {
+                            "MY COMPUTER.EXE": {
                                 type: "file",
-                                name: "My Computer",
+                                name: "My Computer.exe",
                                 icon: "icons/computer.png",
-                                content: `{"action": "file_explorer"}`
+                                content: JSON.stringify({icons:[{id:"0",src:"images/icons/computer.png"}]})
                             },
-                            "Folder": {
+                            "FOLDER": {
                                 type: "dir",
                                 name: "Folder",
                                 child: {}
                             },
-                            "Mi Carpeta": {
-                                type: "link",
-                                name: "Mi Carpeta",
-                                target: "/Windows/Desktop/Folder"
+                            "SHORTCUT TEST.LNK": {
+                                type: "file",
+                                name: "Shortcut Test.lnk",
+                                target: JSON.stringify({"target": "C:/Windows/Desktop/test.exe"})
                             },
-                            "test.exe": {
+                            "TEST.EXE": {
                                 type: "file",
                                 name: "test.exe",
-                                content: JSON.stringify(["ALERT", "Hola mundo we"])
+                                content: JSON.stringify({icons:[{id:"0",src:"images/icons/x.png"}],code:["ALERT", "Hola mundo we"]})
                             },
-                            "Mi nueva gran novela.txt": {
+                            "MI NUEVA GRAN NOVELA.TXT": {
                                 type: "file",
                                 name: "Mi nueva gran novela.txt",
                                 content: `Era hace una vez...`
                             },
+                            "VIRUS HELL YEA.EXE": {
+                                type: "file",
+                                name: "Virus Hell Yea.exe",
+                                content: JSON.stringify({icons:[{id:"0",src:"https://picsum.photos/20"}]}) // funciona XD (picsum da fotos random)
+                            }
                         }
                     },
-                    "System": {
+                    "SYSTEM": {
                         type: "dir",
                         name: "System",
                         child: {
-                            "Gdi32.dll" : {
+                            "_.DLL": {
+                                type: "file",
+                                name: "_.dll",
+                                content: `["FUNCTION", "TotallyNotUsefulFunction", [], ["CONSOLE_WARN", "DLL = Dayanna Library Lmao 👀"]]`
+                            },
+                            "GDI32.DLL" : {
                                 type: "file",
                                 name: "Gdi32.dll",
                                 content: ""
                             },
-                            "Kernel32.dll" : {
+                            "KERNEL32.DLL" : {
                                 type: "file",
                                 name: "Kernel32.dll",
                                 content: ""
                             },
-                            "Shell32.dll" : {
+                            "SHELL32.DLL" : {
                                 type: "file",
                                 name: "Shell32.dll",
-                                content: ""
+                                content: JSON.stringify({
+                                    icons: [
+                                        {id:"0",src:"images/icons/win95File.png"},
+                                        {id:"1",src:"images/icons/documentFile.png"},
+                                        {id:"2",src:"images/icons/window.png"},
+                                        {id:"3",src:"images/icons/folder.png"},
+                                        {id:"4",src:"images/icons/folderOpen.png"},
+                                        {id:"29",src:"images/icons/shortcut.png"},
+                                        {id:"100",src:"images/icons/computer.png"},
+                                        {id:"152",src:"images/icons/textFile.png"}
+                                    ]
+                                })
                             },
-                            "User32.dll" : {
+                            "USER32.DLL" : {
                                 type: "file",
                                 name: "User32.dll",
                                 content: ""
                             },
-                            "Vmm32.vxd" : {
+                            "VMM32.VXD" : { // extensión "XD"?? XD🔥
                                 type: "file",
                                 name: "Vmm32.vxd",
                                 content: ""
                             },
                         }
                     },
-                    "Command.com": {
+                    "COMMAND.COM": {
                         type: "file",
                         name: "Command.com",
                         content: ""
                     },
-                    "Explorer.exe": {
+                    "EXPLORER.EXE": {
                         type: "file",
                         name: "Explorer.exe",
                         content: ""
                     },
-                    "Progman.exe" : {
+                    "PROGMAN.EXE" : {
                         type: "file",
                         name: "Progman.exe",
                         content: ""
                     },
-                    "Progman.ini" : {
+                    "PROGMAN.INI" : {
                         type: "file",
                         name: "Progman.ini",
                         content: "[Groups]\nGroup1=C:/WINDOWS/PROGRAMS.GRP\nGroup2=C:/WINDOWS/ACCESSOR.GRP\nGroup3=C:/WINDOWS/DESKTOP.GRP\nGroup4=C:/WINDOWS/SYSTEMTO.GRP\nGroup5=C:/WINDOWS/DOCUMENT.GRP\nGroup6=C:/WINDOWS/MAIN.GRP\n\n[Settings]\nOrder= 5 1 2 3 4 6\ndisplay.drv=pnpdrvr.drv\nWindow=68 66 548 387 1\n"
                     },
-                    "Readme.txt": {
+                    "README.TXT": {
                         type: "file",
                         name: "Readme.txt",
                         content: ""
                     },
-                    "RegEdit.exe": {
+                    "REGEDIT.EXE": {
                         type: "file",
                         name: "RegEdit.exe",
                         content: ""
                     },
-                    "Welcome.exe": {
+                    "WELCOME.EXE": {
                         type: "file",
                         name: "Welcome.exe",
                         content: ""
                     },
-                    "Win.com": {
+                    "WIN.COM": {
                         type: "file",
                         name: "Win.com",
                         content: "" // BINARY
                     },
-                    "Win.ini": {
+                    "WIN.INI": {
                         type: "file",
                         name: "Win.ini",
                         content: "[windows]\nload=\nrun=\nNullPort=None\n\n[Desktop]\nWallpaper=(None)\nTileWallpaper=0\nWallpaperStyle=0\n\n[initl]\niCountry=1\nICurrDigits=2\niCurrency=0\niDate=0\niDigits=2\niLZero=1\niMeasure=1\niNegCurr=0\niTime=0\niTLZero=0\ns1159=AM\ns2359=PM\nsCountry=United Stated\nsCurrency=$\nsDate=/\nsDecimal=.\nsLanguage=enu\nsList=,\nsLongDate=dddd, MMMM dd, yyyy\nsShortDate=M/d/yy\nsThousand=,\nsTime=:\n\n[fonts]\n\n[FontSubstitues]\nHelv=MS Sans Serif\nTms Rmn=MS Serif\nTimes=Times New Roman\nHelvetica=Arial\n// FALTA UN CHINGO DE LINEAS TODAVÍA....." // TODO: Terminar
@@ -197,6 +218,7 @@ const FS = {
     },
     resolvePath(path){
         if (Array.isArray(path)) path = path.join("/"); // Convertir la ruta de array a string
+        path = path.toUpperCase(); // esto es clave 🏅
         path = this.splitPath(path);
         let currDir = this["$"];
         for (const dir of path){
@@ -236,17 +258,18 @@ const FS = {
             console.error(`[FS][makeDir] La ruta está vacía (${path})`);
             return false;
         };
-        const dirName = path.pop();
+        const rDirName = path.pop();
+        const dirName = rDirName.toUpperCase();
         const currDir = path.length === 0 ? FS["$"] : this.resolvePath(path);
         if (!currDir) return false;
         if (currDir.child[dirName] && currDir.child[dirName].type === "dir"){
-            console.error(`[FS][makeDir]["${currDir.name}"] La carpeta "${dirName}" ya existe`);
+            console.error(`[FS][makeDir]["${currDir.name}"] La carpeta "${rDirName}" ya existe`);
             return false;
         }
-        currDir.child[dirName] = {type:"dir",name:dirName,child:{}};
+        currDir.child[dirName] = {type:"dir",name:rDirName,child:{}};
         this.save();
         Desktop.refresh();
-        return dirName;
+        return rDirName;
     },
     makeFile(path){
         path = this.splitPath(path);
@@ -254,17 +277,18 @@ const FS = {
             console.error(`[FS][makeFile] La ruta está vacía (${path})`);
             return false;
         };
-        const fileName = path.pop();
+        const rFileName = path.pop();
+        const fileName = rFileName.toUpperCase();
         const currDir = path.length === 0 ? FS["$"] : this.resolvePath(path);
         if (!currDir) return false;
         if (currDir.child[fileName] && currDir.child[fileName].type === "file"){
-            console.error(`[FS][makeFile]["${currDir.name}"] El archivo "${fileName}" ya existe`);
+            console.error(`[FS][makeFile]["${currDir.name}"] El archivo "${rFileName}" ya existe`);
             return false;
         }
-        currDir.child[fileName] = {type:"file",name:fileName,content:""};
+        currDir.child[fileName] = {type:"file",name:rFileName,content:""};
         this.save();
         Desktop.refresh();
-        return fileName;
+        return rFileName;
     },
     readFile(path){
         path = this.splitPath(path);
@@ -272,15 +296,16 @@ const FS = {
             console.error(`[FS][readFile] La ruta está vacía (${path})`);
             return false;
         };
-        const fileName = path.pop();
+        const rFileName = path.pop();
+        const fileName = rFileName.toUpperCase();
         const currDir = path.length === 0 ? FS["$"] : this.resolvePath(path);
         if (!currDir) return false;
         if (!currDir.child[fileName]){
-            console.error(`[FS][readFile]["${currDir.name}"] El archivo "${fileName}" no existe`);
+            console.error(`[FS][readFile]["${currDir.name}"] El archivo "${rFileName}" no existe`);
             return false;
         }
         if (currDir.child[fileName].type !== "file"){
-            console.error(`[FS][readFile]["${currDir.name}"] "${fileName}" no es un archivo`);
+            console.error(`[FS][readFile]["${currDir.name}"] "${rFileName}" no es un archivo`);
             return false;
         }
         return currDir.child[fileName].content;
@@ -291,15 +316,16 @@ const FS = {
             console.error(`[FS][writeFile] La ruta está vacía (${path})`);
             return false;
         };
-        const fileName = path.pop();
+        const rFileName = path.pop();
+        const fileName = rFileName.toUpperCase();
         const currDir = path.length === 0 ? FS["$"] : this.resolvePath(path);
         if (!currDir) return false;
         if (!currDir.child[fileName]){
-            console.error(`[FS][writeFile]["${currDir.name}"] El archivo "${fileName}" no existe`);
+            console.error(`[FS][writeFile]["${currDir.name}"] El archivo "${rFileName}" no existe`);
             return false;
         }
         if (currDir.child[fileName].type !== "file"){
-            console.error(`[FS][writeFile]["${currDir.name}"] "${fileName}" no es un archivo`);
+            console.error(`[FS][writeFile]["${currDir.name}"] "${rFileName}" no es un archivo`);
             return false;
         }
         currDir.child[fileName].content = content;
@@ -313,11 +339,12 @@ const FS = {
             console.error(`[FS][writeFile] La ruta está vacía (${path})`);
             return false;
         };
-        const itemName = path.pop();
+        const rItemName = path.pop();
+        const itemName = rItemName.toUpperCase();
         const currDir = path.length === 0 ? FS["$"] : this.resolvePath(path);
         if (!currDir) return false;
         if (!currDir.child[itemName]){
-            console.error(`[FS][writeFile]["${currDir.name}"] El elemento "${itemName}" no existe`);
+            console.error(`[FS][writeFile]["${currDir.name}"] El elemento "${rItemName}" no existe`);
             return false;
         }
         delete currDir.child[itemName];
@@ -325,31 +352,55 @@ const FS = {
         Desktop.refresh();
         return true;
     },
-    rename(path, newName){
+    rename(path, rNewName){
+        const newName = rNewName.toUpperCase();
         path = this.splitPath(path);
         if (path.length === 0){
             console.error(`[FS][rename] La ruta está vacía (${path})`);
             return false;
         };
-        const fileName = path.pop();
+        const rFileName = path.pop();
+        const fileName = rFileName.toUpperCase();
         const currDir = path.length === 0 ? FS["$"] : this.resolvePath(path);
         if (!currDir) return false;
         if (!currDir.child[fileName]){
-            console.error(`[FS][rename]["${currDir.name}"] El elemento "${fileName}" no existe`);
+            console.error(`[FS][rename]["${currDir.name}"] El elemento "${rFileName}" no existe`);
             return false;
         }
         if (currDir.child[newName]){
-            console.error(`[FS][rename]["${currDir.name}"] El archivo "${newName}" ya existe`);
+            console.error(`[FS][rename]["${currDir.name}"] El archivo "${rNewName}" ya existe`);
             return false;
         }
         const original = currDir.child[fileName];
-        delete currDir.child[fileName]; // ¿al borrar [fileName], "original" tambien se borra ya que "apuntaba a [fileName]" o ya hizo una copia!?
+        delete currDir.child[fileName];
         currDir.child[newName] = original;
-        original.name = newName;
+        original.name = rNewName;
 
         this.save();
         Desktop.refresh();
         return newName;
+    },
+    getIcon(path){
+        // Dios lo que costó hacer esto
+        let [filePath, index] = path.split(",");
+        if (!index) index = "0";
+        //// console.log("[getICON]", [filePath, index]);
+        const fileData = this.readFile(filePath);
+        if (!fileData) return null;
+        try {
+            const fileObj = JSON.parse(fileData);
+            const icons = fileObj.icons; // array de iconos [{id:int, src:"str"}, {...}...]
+            if (!icons) return null;
+            if (index.startsWith("-")){ // indice directo
+                return icons[index.split("-")[1]]?.src ?? null;
+            } else {
+                const icon = icons.find(i=>i.id===index)?.src;
+                return icon ?? icons[Number(index)]?.src ?? null;
+            }
+        } catch(e){
+            console.error(e.message);
+            return null;
+        }
     },
     init(){
         const loadedFS = localStorage.getItem(this.LOCAL_STORAGE);

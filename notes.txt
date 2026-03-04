@@ -31,6 +31,8 @@ Usar sonidos al startup, y al tener mensajes de error
 
 - ¿qué chingao es CLSID y para que sirve!??? he hecho casi un ecosistema completo y no se eso 😭😭😭
 
+- ¿cómo funcionan los PropertySheetHandlers!???
+
 ### "CÓDIGO" ###
 Mi idea es esta:
 [OPCODE, args o otro OPCODE...]
@@ -80,7 +82,7 @@ Y un "USER32.DLL" tendría *algo así*
     ],
     ["FUNCTION", "CREATE_WINDOW", ["title","content","styles","x","y","transform","width","height","obligatory"],
         [
-            // HERMANO, si llego a terminar esto, y hago las mismas funciones DOM para este lenguaje... diría que "WindowManager" quedaría sin utilildad ya que esto lo haría JAJAJJAJAJA (me siento Macrosoft....🗿🚬)
+            // HERMANO, si llego a terminar esto, y hago las mismas funciones DOM para este lenguaje... diría que "WindowManager" quedaría sin utilidad ya que esto lo haría JAJAJJAJAJA (me siento Macrosoft....🗿🚬)
         ]
     ]
 ]
@@ -89,6 +91,7 @@ Y un "USER32.DLL" tendría *algo así*
 
 ### NOTAS (literal XD) ###
 El efecto doble click y llamar a procManager es debug todavía, tengo que manejar bien eso con el regedit para saber qué aplicación usar con cada extensión (me tocará hacer el bloc de notas💔💔💔)
+¿nunca te has preguntado qué sucede si un progId tiene "AlwaysShowExt" y "NeverShowExt"!?? ¡pues pruebalo en tu PC, no contamines Windows95!♻♻
 
 ### TO-DO's ###
 // TODO (Urgente): Hacer que las opciones de contextmenu en archivos, carpetas y desktop sean dinamicas por el regedit
@@ -102,6 +105,7 @@ El efecto doble click y llamar a procManager es debug todavía, tengo que maneja
     nadaMasWe: "nadaMasWe"
 }
 // TODO: Permitir íconos a las ventanas (duda: ¿se ponen en runtime o al crear la ventana???)
+// TODO (optimización): Reemplazar los event listeners de arrastre de las ventanas a un solo listener global en el document detectando si el target es una ventana (ya que tanto me gritan que hay fuga de listeners 😭)
 
 ### PASOS PARA AÑADIR UN PROGRAMA ###
 1. Haz la idea en notes.txt
@@ -116,6 +120,40 @@ El efecto doble click y llamar a procManager es debug todavía, tengo que maneja
 10. Reza por que no te hayas confundido en algun argumento de un OPCODE
 11. Mira a tu chico malo ejecutarce 🐎🔥
 12. Y disfruta! (parece receta de la abuela XDXDD)
+
+### ESTRUCTURA DE UN .exe ORIGINAL (primera vez que leo una documentación completa) ###
+(los little-endian ya están transformados)
+=== MS-DOS Stub (Image Only) ===
+| 2 bytes | MZ Signature ("MZ")     | ("Mark Zbikowski", mi papi🗿🔥)
+| * bytes | DOS Header              | (puedes guardar mensajes ocultos aquí :v👀)
+| 4 bytes | pointer to PE Header    | (at 0x3C)
+=== Signature (Image Only) ===
+| 4 bytes | PE Signature            | ("PE\0\0")
+=== COFF File Header (Object and Image) ===
+| 2 bytes | Machine                 | Tipo de CPU (0x14c=x86, 0x8664=x64)
+| 2 bytes | NumberOfSections        | Numero de secciones en el archivo
+| 4 bytes | TimeDateStamp           | Fecha/Hora de creación (segundos desde 1970)
+| 4 bytes | PointerToSymbolTable    | Offset a tabla de simbolos (casi siempre 0 en ejecutables)
+| 4 bytes | NumberOfSymbols         | Numero de simbolos en la table (casi siempre 0)
+| 2 bytes | SizeOfOptionalHeader    | Tamaño del Optional Header (el que sigue a este header)
+| 2 bytes | Characteristics         | Flags de caracteristicas del archivo (mira abajo para más info)
+=== [CHARACTERISTICS FLAGS] ===
+| 0x0001 | IMAGE_FILE_EXECUTABLE_IMAGE    | Es un ejecutable válido
+| 0x0020 | IMAGE_FILE_LARGE_ADDRESS_AWARE | El programa puede usar más de 2-GB de memoria
+| 0x0100 | IMAGE_FILE_32BIT_MACHINE       | La máquina es basada en la arquitectura 32bits
+| 0x1000 | IMAGE_FILE_SYSTEM              | El archivo es del sistema, no un programa de usuario normal (aunque creo que no cambia nada XD)
+| 0x2000 | IMAGE_FILE_DLL                 | El archivo es una dynamic-link library (DLL)
+=== Optional Header (Image Only) ===
+| 2 bytes | Magic                   | Identifica el estado de la imagen (0x10B=PE32, 0x20B=PE32+)
+| 1 byte  | MajorLinkerVersion      | Versión principal del linker que creó el ejecutable
+| 1 byte  | MinorLinkerVersion      | Versión secundaria del lanzador
+| 4 bytes | SizeOfCode              | Tamaño total de la sección de código (.text). O la suma de todas las secciones si hay varias
+| 4 bytes | SizeOfInitializedData   | Tamaño total de la sección de datos inicializados (.data)
+| 4 bytes | SizeOfInitializedData   | Tamaño total de la sección de datos no inicializados (.bss)
+| 4 bytes | AddressOfEntryPoint     | Dirección RVA (Relative Virtual Address) del punto de entrada (opcional para un DLL)
+| 4 bytes | BaseOfCode              | RVA del inicio de la sección de código
+| 4 bytes | BaseOfData              | (Solo en PE32 de 32bits) RVA del inicio de la sección de datos (*Nota: En PE32+ este campo no existe para ahorrar espacio)
+..... ya me cansé we
 
 ### DUDA MAS IMPORTANTE DE TODAS ###
 ***¿Usarías Windows12 como OS de preferencia? 🗿🚬***
