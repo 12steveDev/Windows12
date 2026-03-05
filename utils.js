@@ -5,3 +5,4 @@ const E = (tag) => document.createElement(tag);
 
 const desktop = $(".desktop");
 const isObj = (obj) => (typeof obj === "object" && obj !== null);
+

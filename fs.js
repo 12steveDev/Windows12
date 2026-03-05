@@ -45,7 +45,7 @@ const FS = {
                             "SHORTCUT TEST.LNK": {
                                 type: "file",
                                 name: "Shortcut Test.lnk",
-                                target: JSON.stringify({"target": "C:/Windows/Desktop/test.exe"})
+                                target: JSON.stringify({target: "C:/Windows/Desktop/test.exe"})
                             },
                             "TEST.EXE": {
                                 type: "file",
@@ -93,9 +93,23 @@ const FS = {
                                         {id:"2",src:"images/icons/window.png"},
                                         {id:"3",src:"images/icons/folder.png"},
                                         {id:"4",src:"images/icons/folderOpen.png"},
+                                        {id:"5",src:"images/icons/diskDrive.png"},
+                                        {id:"6",src:"images/icons/floppyDrive.png"},
+                                        {id:"7",src:"images/icons/portableDrive.png"},
+                                        {id:"9",src:"images/icons/hardDrive.png"},
+                                        {id:"10",src:"images/icons/networkDriveConnected.png"},
+                                        {id:"11",src:"images/icons/networkDriveOffline.png"},
+                                        {id:"12",src:"images/icons/cdDrive.png"},
+                                        {id:"13",src:"images/icons/ramDrive.png"},
+                                        {id:"14",src:"images/icons/globe.png"},
                                         {id:"29",src:"images/icons/shortcut.png"},
                                         {id:"100",src:"images/icons/computer.png"},
-                                        {id:"152",src:"images/icons/textFile.png"}
+                                        {id:"144",src:"images/icons/recycleFile.png"},
+                                        {id:"145",src:"images/icons/recycleFolder.png"},
+                                        {id:"151",src:"images/icons/gearTextFile.png"},
+                                        {id:"152",src:"images/icons/textFile.png"},
+                                        {id:"154",src:"images/icons/gearFile.png"},
+                                        {id:"155",src:"images/icons/AFile.png"}
                                     ]
                                 })
                             },
@@ -121,6 +135,24 @@ const FS = {
                         name: "Explorer.exe",
                         content: ""
                     },
+                    "NOTEPAD.EXE": {
+                        type: "file",
+                        name: "Notepad.exe",
+                        content: JSON.stringify({icons:[
+                            {id:"0",src:"images/icons/notepad.png"},
+                            {id:"1",src:"images/icons/textFile.png"}
+                        ],code:[
+                            ["SET", "arg", ["GET_ARGV", 1]],
+                            ["SET", "arg2", ["GET_ARGV", 2]],
+                            ["IF", ["VAR", "arg"],
+                                ["IF", ["==", "${arg}", "/p"],
+                                    ["ALERT", "Imprimiendo: ${arg2}"],
+                                    ["ALERT", "Abriendo: ${arg}"]
+                                ],
+                                ["ALERT", "Sin argumentos. Notepad limpio"]
+                            ]
+                        ]})
+                    },
                     "PROGMAN.EXE" : {
                         type: "file",
                         name: "Progman.exe",
@@ -139,7 +171,19 @@ const FS = {
                     "REGEDIT.EXE": {
                         type: "file",
                         name: "RegEdit.exe",
-                        content: ""
+                        content: JSON.stringify({icons:[
+                            {id:"0",src:"images/icons/regedit.png"},
+                            {id:"1",src:"images/icons/regeditFile.png"},
+                            {id:"2",src:"images/icons/regeditScan.png"},
+                            {id:"3",src:"images/icons/computer.png"},
+                            {id:"4",src:"images/icons/computer.png"}, // parecieran ser 2 iguales
+                            {id:"5",src:"images/icons/folder.png"},
+                            {id:"6",src:"images/icons/folderOpen.png"},
+                            {id:"7",src:"images/icons/regedit_string.png"},
+                            {id:"8",src:"images/icons/regedit_binary.png"}
+                        ], code:[
+                            ["ALERT", "Abriendo regedit!?"]
+                        ]})
                     },
                     "WELCOME.EXE": {
                         type: "file",

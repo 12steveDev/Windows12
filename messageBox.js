@@ -1,5 +1,5 @@
-// popup.js
-const Popup = {
+// messageBox.js
+const MessageBox = {
     ICON_NONE: 0,
     // El nombre de estos archivos son los más cuestionablemente útiles 🥀
     ICON_INFO: "icons/i.png",
@@ -9,7 +9,7 @@ const Popup = {
     ICON_DENIED: "icons/-.png",
     TYPE_OK: 10,
     TYPE_OK_CANCEL: 11,
-    
+
     showAlert(obj){
         /*
         ### SINTAXIS ###
@@ -27,7 +27,7 @@ const Popup = {
         // Autocompletación para evitar errores
         if (!obj.title) obj.title = "Alert";
         if (!obj.buttons) obj.buttons = [{label:"Accept",action:()=>{}}];
-        if (!obj.icon) obj.icon = Popup.ICON_NONE;
+        if (!obj.icon) obj.icon = MessageBox.ICON_NONE;
 
         const baseContent = E("div");
 
@@ -40,7 +40,7 @@ const Popup = {
         const iconImg = E("img");
         iconImg.style.width = "45px";
         iconImg.style.height = "auto";
-        if (obj.icon !== Popup.ICON_NONE) iconImg.src = "images/" + obj.icon;
+        if (obj.icon !== MessageBox.ICON_NONE) iconImg.src = "images/" + obj.icon;
         contentDiv.appendChild(iconImg);
 
         const contentP = E("p");

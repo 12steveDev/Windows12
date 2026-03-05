@@ -48,6 +48,10 @@ const EXEC = {
                     return ex(args[0]).trim();
                 case "RANDOM":
                     return Math.random();
+                case "GET_ARGV":
+                    return procData.argv[ex(args[0])];
+                case "GET_ARGC":
+                    return procData.argc;
                 // === MATH === //
                 case "ADD":
                 case "+":
@@ -112,11 +116,7 @@ const EXEC = {
                     procData.vars[args[0]] = val; // no sé cual es la diferencia, pero da menos errores damn
                     return;
                 case "VAR":
-                    if (procData.vars[args[0]] === undefined){
-                        throw new Error(`Variable "${args[0]}" does not exist`);
-                        return;
-                    }
-                    return procData.vars[args[0]];
+                    return procData.vars[args[0]]
                 // === FUNCTIONS === //
                 case "FUNCTION":
                     procData.funcs[args[0]] = {

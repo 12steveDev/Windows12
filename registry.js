@@ -3,6 +3,11 @@ const Registry = {
     LOCAL_STORAGE: "__windows12_registry__",
     panelsDivision: "40% 60%",
     panelsGap: "6px",
+    KEY_DICT: {
+        "open": "&Open",
+        "print": "&Print",
+        "openas": "Op&en With..."
+    },
     hives: {
         HKEY_CLASSES_ROOT: {
             "*": {
@@ -13,6 +18,7 @@ const Registry = {
                 }
             },
             ".dll": { "@": "dllfile" },
+            ".ini": { "@": "inifile" },
             ".lnk": {
                 "@": "lnkfile",
                 "@Command": "C:/WINDOWS/rundll32.exe AppWiz.Cpl,NewLinkHere %1" // jaja, ¿recreo esto tambien? :'v
@@ -107,7 +113,7 @@ const Registry = {
                 "@": "Application Extension",
                 "@AlwaysShowExt": "",
                 "@EditFlags": "01 00 00 00",
-                "DefaultIcon": { "@": "C:/WINDOWS/SYSTEM/shell32.dll,-154" }
+                "DefaultIcon": { "@": "C:/WINDOWS/SYSTEM/shell32.dll,154" } // TODO: añadir "-" a "154"
             },
             "exefile": {
                 "@": "Application",
@@ -161,6 +167,18 @@ const Registry = {
                     }
                 }
             },
+            "inifile":{
+                "@": "Configuration Settings",
+                "DefaultIcon": { "@": "C:/WINDOWS/SYSTEM/shell32.dll,151" }, // TODO: añadir "-" al "151" (así está originalmente, ahorita estoy debuggeando)
+                "shell": {
+                    "open": {
+                        "command": { "@": "C:/WINDOWS/NOTEPAD.EXE %1" },
+                    },
+                    "print": {
+                        "command": { "@": "C:/WINDOWS/NOTEPAD.EXE /p %1" }
+                    }
+                }
+            },
             "lnkfile": { // PORFAVOR, UN ACCESO DIRECTO NO ES UN TIPO MAGICO DE ARCHIVO, ES UNA PINCHE EXTENSIÓN
                 "@": "Shortcut",
                 "@EditFlags": "01 00 00 00",
@@ -199,11 +217,11 @@ const Registry = {
                 "@": "System File",
                 "@AlwaysShowExt": "",
                 "@EditFlags": "01 00 00 00",
-                "DefaultIcon": { "@": "C:/WINDOWS/SYSTEM/shell32.dll,-154" }
+                "DefaultIcon": { "@": "C:/WINDOWS/SYSTEM/shell32.dll,154" } // TODO: añadir "-" a "154"
             },
             "txtfile": {
                 "@": "Text Document",
-                "DefaultIcon": { "@": "C:/WINDOWS/SYSTEM/shell32.dll,-152" },
+                "DefaultIcon": { "@": "C:/WINDOWS/SYSTEM/shell32.dll,152" }, // TODO: añadir "-" al "152"
                 "shell": {
                     "open": {
                         "command": { "@": "C:/WINDOWS/NOTEPAD.EXE %1" }
@@ -488,43 +506,8 @@ const Registry = {
         </table>`
         return table;
     },
-    splitCmdLineArgs(cmdLine){
-        const args = [];
-        let currArg = "";
-        let quoteMode = false;
-        let escape = false
-        for (const char of cmdLine){
-            if (escape){ // ¿hubo un "\" antes?
-                currArg += char;
-                escape = false;
-                continue;
-            } else if (char === "\\"){ // el pinche backslash jeje te kero
-                escape = true;
-            } else if (char === '"'){ // la pinshe comilla destruye-inspiración
-                if (quoteMode){
-                    args.push(currArg);
-                    currArg = "";
-                }
-                quoteMode = !quoteMode; // por momentos me siento tony stark
-            } else if (char === " "){ // el separador 🗣
-                if (quoteMode){ // dentro de las comillas puede haber espacios, obvio
-                    currArg += char;
-                } else {
-                    // quitar espacios internos
-                    if (currArg.length === 0) continue;
-                    args.push(currArg);
-                    currArg = "";
-                }
-            } else {
-                currArg += char;
-            }
-            // console.log(`(curr:${char}) ${escape?"(escape)":"        "} ${quoteMode?"(quote)":"       "}`, currArg) // descomentar para ver las entrañas de un parser, supongo XD
-        }
-        if (currArg) args.push(currArg);
-        return args;
-    },
     replaceCommandLineArgs(str, args){
-        str = str.replace(/%\*/g, args.slice(1).join(" ") || "");
+        str = str.replace(/%\*/g, args.slice(2).join(" ") || ""); // ! si suceden errores a futuro, revisar esta línea
         return str.replace(/%(\d+)/g, (match, argIndex)=>{
             argIndex = Number(argIndex);
             // si no existe, devuelve el "%*" literal
@@ -542,7 +525,9 @@ const Registry = {
         const prefs = {
             name: null,
             icon: null,
-            desc: null
+            desc: null,
+            isShortcut: false,
+            actions: [],
         };
         //// console.log("- [name]", item.name)
         // 1. obtener progId basado en tipo y extensión
@@ -574,7 +559,7 @@ const Registry = {
             const iconKey = this.resolvePath(`%HKCR%/${progId}/DefaultIcon`);
             if (iconKey && iconKey["@"]){
                 const iconPath = iconKey["@"];
-                prefs.icon = FS.getIcon(this.replaceCommandLineArgs(iconPath, ["", itemPath]));
+                prefs.icon = FS.getIcon(this.replaceCommandLineArgs(iconPath, [itemPath, itemPath]));
             }
         }
         // 3. resolver el nombre y descripción del tipo de archivo (del progId)
@@ -582,6 +567,7 @@ const Registry = {
             const progIdKey = this.resolvePath(`%HKCR%/${progId}`);
             if (progIdKey){
                 if (progIdKey["@"]) prefs.desc = progIdKey["@"];
+                if (progIdKey["@IsShortcut"] !== undefined) prefs.isShortcut = true;
                 if (progIdKey["@NeverShowExt"] !== undefined){
                     prefs.name = item.name.split(".").shift();
                 } else if (progIdKey["@AlwaysShowExt"] !== undefined){
@@ -590,6 +576,63 @@ const Registry = {
                     prefs.name = Settings.get("showFileExtensions") ? item.name : item.name.split(".").shift();
                 }
             }
+        }
+        // 4. context menus shells
+        if (progId){
+            const shellKey = this.resolvePath(`%HKCR%/${progId}/shell`) ?? this.resolvePath(`%HKCR%/Unknown/shell`);
+            if (shellKey){
+                for (const [label, cmdKey] of Object.entries(shellKey)){
+                    if (label.startsWith("@")) continue;
+                    const currAct = {
+                        label: this.KEY_DICT[label] ? this.KEY_DICT[label] : label, // usar esas transformaciones raras de windows
+                        action: ()=>MessageBox.showAlert({
+                            title: itemPath,
+                            content: `This file does not have a program associated with it for performing this action. Create an association in My Computer by clicking View and then clicking Options.`,
+                            icon: MessageBox.ICON_ERROR,
+                            buttons: [
+                                { label: "OK", action:()=>{} }
+                            ],
+                            obligatory: true
+                        })
+                    };
+                    if (cmdKey["@"]) currAct.label = cmdKey["@"]; // si la acción tiene name especifico, usarlo
+                    if (cmdKey["command"]){
+                        // comando
+                        const commandKey = cmdKey["command"];
+                        if (commandKey["@"]){
+                            currAct.action = ()=>ProcessManager.createProcess(this.replaceCommandLineArgs(commandKey["@"], ["¿qué va aquí? ¿'regedit.exe' o nada??", itemPath])); // TODO: plis respondanme esta duda
+                        }
+                    }
+                    prefs.actions.push(currAct);
+                }
+            prefs.actions = [...prefs.actions,
+                // TODO: Esto es temporal, ¿implementamos ContextMenuHandlers!?? porfavor no
+                { separator: true },
+                { label: "Send To     >", action: ()=>{} },
+                { separator: true },
+                { label: "Cut", action: ()=>{} },
+                { label: "Copy", action: ()=>{} },
+                { separator: true },
+                { label: "Create Shortcut", action: ()=>{} },
+                { label: "Delete", action: ()=>MessageBox.showAlert({
+                    title: item.type === "dir" ? "Confirm Folder Delete" : "Confirm File Delete",
+                    content: item.type === "dir" ? `Are you sure you want to remove the folder '${item.name}' and move all its contents to the Recycle Bin?` : `Are you sure you want to send '${item.name}' to the Recycle Bin?`,
+                    icon: item.type === "dir" ? "icons/recycleFolder.png" : "icons/recycleFile.png",
+                    buttons: [
+                        { label: "Yes", action: ()=> FS.remove(`${Settings.get("desktopDir")}/${item.name}`) },
+                        { label: "No", action: ()=> {} }
+                    ],
+                    obligatory: true
+                }) },
+                { label: "Rename", action: ()=>{
+                    // TODO: arreglar esto, no existe el elemento Div aquí porque registry no debe saber nada de UI
+                    Desktop.renameInPlace(itemDiv, item);
+                } },
+                { separator: true },
+                { label: "Properties", action: ()=>{} },
+            ]
+            }
+
         }
         // fallbacks
         if (!prefs.icon){

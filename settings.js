@@ -3,6 +3,7 @@ const Settings = {
     LOCAL_STORAGE: "__windows12_settings__",
     values: {
         // TODO: Permitir que Columns y Rows al ser "auto" haga que el grid en desktop sea responsive-vibes (auto-fill)
+        "desktopDir":          "C:/WINDOWS/DESKTOP/",
         "desktopColumns":      5,
         "desktopRows":         4,
         "desktopGap":          "10px",

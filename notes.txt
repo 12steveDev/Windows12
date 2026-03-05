@@ -106,6 +106,9 @@ El efecto doble click y llamar a procManager es debug todavía, tengo que maneja
 }
 // TODO: Permitir íconos a las ventanas (duda: ¿se ponen en runtime o al crear la ventana???)
 // TODO (optimización): Reemplazar los event listeners de arrastre de las ventanas a un solo listener global en el document detectando si el target es una ventana (ya que tanto me gritan que hay fuga de listeners 😭)
+// TODO: Corregir que los .lnk solamente oculten el ".lnk" y no cualquier otra extensión que tengan por debajo (actualmente se usa split "." y shift(), puro nombre sin ninguna extensión)
+// TODO: Los .lnk no sirven porque no tienen "shell", sino "shellex" y no se como implementar eso :'v
+// TODO: Parsear los mensajes "Op&en With..." haciendo "&" un subrayado inferior, y quizás un atajo de teclas con alt
 
 ### PASOS PARA AÑADIR UN PROGRAMA ###
 1. Haz la idea en notes.txt
