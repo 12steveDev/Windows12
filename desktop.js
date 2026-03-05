@@ -223,6 +223,7 @@ const Desktop = {
                 { separator: true },
                 { label: "Properties", action: ()=>{} },
                 { separator: true },
+                // ! ESTO ES DEBUGGING ! //
                 { label: "Change Desktop Dir", action: ()=>Settings.set("desktopDir", prompt("prompt feo\nnuevo directorio:", Settings.get("desktopDir"))) },
                 { label: "Reset Local Storage", action: ()=>{
                     localStorage.clear();

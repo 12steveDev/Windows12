@@ -629,7 +629,7 @@ const Registry = {
                     Desktop.renameInPlace(itemDiv, item);
                 } },
                 { separator: true },
-                { label: "Properties", action: ()=>{} },
+                { label: "Properties", action: ()=>{} }
             ]
             }
 
@@ -638,6 +638,9 @@ const Registry = {
         if (!prefs.icon){
             prefs.icon = `images/icons/${item.type === "dir" ? "folder.png" : "win95File.png"}`;
         }
+        
+        // ! ESTO ES DEBUGGING ! //
+        if (item.type === "file") prefs.actions.push({label: "Write File", action: ()=>FS.writeFile(itemPath, prompt("prompt feo\nnuevo contenido:", FS.readFile(itemPath)))});
         return prefs;
     }
 }
