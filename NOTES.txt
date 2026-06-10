@@ -1,0 +1,111 @@
+# NOTES.txt #
+
+Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬🚬
+
+# === [🛠️] TODO: [🛠️] === #
+- Mostrar iconos hardcodeados para dar por INICIADO el proyecto XDXD
+
+# === [💡] IDEAS (solo IDEAS): [💡] === #
+- OJO PLS PLS: HACER TODO ASYNC PARA PODER TENER DELAYS Y SLEEPS BONITOS
+- TextMode y GraphicMode (y cambiar entre uno y otro durante el booteo)
+- Lenguaje Bytecode (ECSE)
+- - (si el anterior se hace) Permitir código dinámico/no hardcodeado para booteo (ECSE mismo)
+- Cuando un programa crea un elemento DOM, asignar automaticamente su attr "data-pid" al pid del proceso
+- - Esto ayudará a que cuando se mate un pid, borre automaticamente todo elemento DOM asociado, 0 basura DOM de procs zombis
+- Archivos ".exe" ser:
+```
+- IMAGE_ECSE_HEADER: "12ECSE\x12" (7 bytes)
+- IMAGE_CONTENT: JSON.stringify({
+    ".header": {
+        format: "EXECUTABLE" | "DLL",
+        version: 1, // más útil que goto🥀
+        arch: "ECSE32",//lmao
+        subsystem: "CONSOLE" | "WINDOWS", 
+        entrypoint: ".text",
+        compiledAt: Date.now(),
+        DOSStubSecretMessage: "Este programa no puede ejecutarse en calculadora de bolsillo mode.", // alta referencia lol
+    },
+    ".idata": {
+        "USER32.DLL": ["MessageBox", "CreateWindow"]
+    },
+    ".edata": ["sumar", "miVariable"],
+    ".data": {
+        "miVariable": "dato inicializado antes de ejecutar!" 
+    },
+    ".rsrc": {
+        "imagenKawai": "images/icons/kawai.png",
+        "stringEpico": "(Windows 11 > Windows 12) === !true"
+    }
+    ".text": [
+        ["FUNCTION", "sumar", ["a", "b"], [
+            ["RETURN", ["+", ["V","a"], ["V","b"]]]
+        ]],
+        ["CALL", "MessageBox", "Hi Mundo :3", ["V","miVariable"]],
+        ["EXIT"] // "EXIT" termina el proceso, "WAIT" deja el proceso corriendo hasta que se mate solo (tipo programas con ventanas que deben mantenerse ejecutandose)
+    ]
+});
+- IDEOTA: Hacer que todo el contenido (o solamente el código .text) simule ser binario con "btoa()" y al leer simplemente usar "atob()" (NO ES PROTECCIÓN, solamente para recrear eso de que "leo un .exe = bytes ilegibles")
+```
+- FS será dividido entre:
+```
+"C:": {
+    name: "C:",
+    volumeLabel: "DriveEpicardo",
+    type: "dir",
+    children: {
+        "CARPETAEPICARDA": {
+            name: "CarpetaEpicarda",
+            type: "dir",
+            creationTime: Date.now(),
+            lastModified: Date.now(),
+            attrs: 0b0000,
+            children: {}
+        },
+        "ARCHIVOEPICARDO.TXT": {
+            name: "ArchivoEpicardo.txt",
+            type: "file",
+            creationTime: Date.now(),
+            lastModified: Date.now(),
+            attrs: 0b0000,  // (HIDDEN | READONLY | SYSTEM | ARCHIVE)
+            content: ""
+        }
+    }
+};
+```
+- Un CreateProcess()
+- PCB de los procesos:
+```
+{
+    pid: 12,
+    path: "C:/Windows/Desktop/miProg.exe",
+    cmdLine: "C:/Windows/Desktop/miProg.exe --param1 --param2=jeje",
+    dllUsed: {}, // { "USER32.DLL": ["MessageBox", "CreateWindow"] } (se actualiza leyendo el .idata del ejecutable antes de crear el PCB)
+    argv: ["C:/Windows/Desktop/miProg.exe", "--param1", "--param2=jeje"],
+    argc: 3,
+    res: exe[".rsrc"], // el programa podrá acceder a sus rsrc
+    format: exe[".header"].format,
+    arch: exe[".header"].arch,
+    exported: exe[".edata"],
+    scopes: [{ // scopes para mantener uno global y otros locales (vars modificables globalmente desde una función, etc...)
+        vars: exe[".data"] ?? {},
+        funcs: {},
+    }],
+    state: "running" // "running" | "idle" | "terminated"
+};
+```
+- Crear un Registry para poder usar ShellExecute() con extensiones asociadas.
+- Guardar el registry en formato XML (para más variedad en el sistema además del JSON)
+- Los DLL's importados deberán mantener un estado global cuando sean importados. Tipo "ejecutarse una sola vez" y el resultado de su ejecución (variables y funcs exportadas) quedan iguales para todos quienes las importen
+- - Esto permitiria que las DLLs guarden estado interno inaccesible desde afuera. imagina las posibilidades 👀👀
+# === [❓] DUDAS: [❓] === #
+- Necesito una manera de separar programas que puedan acceder a cosas del sistema y que otros no. ¿rings 0 y 3???
+
+# === [📄] NOTAS (irónico): [📄] === #
+Flujo (esperado) de Windows12:
+- Se ejecuta booteo (sea hardcodeado o dinamico por drive)
+- Boot cambia modo texto a modo gráfico (si se llega a implementar)
+- Boot ejecuta "C:/Windows/explorer.exe"
+- explorer lista todo en "C:/Windows/Desktop/" y los muestra obteniendo los íconos asociados con las extensiones
+- usuario hace doble click en ícono:
+- - *Probablemente* se ejecuta "ShellExecute()" que resuelve asociaciones (.png, .txt, .html, etc) y termina llamando al CreateProcess() con los programas y args necesarios
+- - PCB vive hasta que termina el programa

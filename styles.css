@@ -1,0 +1,70 @@
+/* styles.css */
+@font-face {
+    font-family: "VGA";
+    src: url("fonts/Px437_IBM_VGA_8x16.ttf");
+}
+@font-face {
+    font-family: "Win95";
+    src: url("fonts/W95F.otf");
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+.hide {
+    display: none;
+}
+.graphicmode, .textmode, body {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+.textmode {
+    font-family: "VGA";
+    background: #000000;
+    color: #ffffff;
+    font-size: 30px;
+    padding: 10px;
+    white-space: pre-wrap; /* Terminales be like: */
+}
+.graphicmode {
+    font-family: "Win95";
+}
+
+.desktop {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-rows: repeat(auto-fit, 120px);
+    background: #008080;
+    width: 100%;
+    height: 100%;
+    color: #ffffff
+}
+.desktopIcon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 5px;
+    aspect-ratio: 1/1;
+}
+.desktopIcon img {
+    width: 50%;
+    height: auto;
+    aspect-ratio: 1/1;
+}
+.desktopIcon p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 90%;
+    text-align: center;
+    text-shadow: 2px 1px 0 #000000;
+}
