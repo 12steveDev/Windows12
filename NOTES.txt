@@ -3,7 +3,8 @@
 Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬🚬
 
 # === [🛠️] TODO: [🛠️] === #
-- Mostrar iconos hardcodeados para dar por INICIADO el proyecto XDXD
+- FS: Implementar resolución de rutas (ignorar "/" absurdos, parsear "\", etc..)
+- FS: Implementar metodo list() que devuelva todos los elementos listados en un directorio
 
 # === [💡] IDEAS (solo IDEAS): [💡] === #
 - OJO PLS PLS: HACER TODO ASYNC PARA PODER TENER DELAYS Y SLEEPS BONITOS
@@ -95,10 +96,10 @@ Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬�
 ```
 - Crear un Registry para poder usar ShellExecute() con extensiones asociadas.
 - Guardar el registry en formato XML (para más variedad en el sistema además del JSON)
-- Los DLL's importados deberán mantener un estado global cuando sean importados. Tipo "ejecutarse una sola vez" y el resultado de su ejecución (variables y funcs exportadas) quedan iguales para todos quienes las importen
+- Los DLL's importados deberán mantener un estado global cuando sean (1 sola instancia). Tipo "ejecutarse una sola vez" y el resultado de su ejecución (variables y funcs exportadas) quedan iguales para todos quienes las importen
 - - Esto permitiria que las DLLs guarden estado interno inaccesible desde afuera. imagina las posibilidades 👀👀
 # === [❓] DUDAS: [❓] === #
-- Necesito una manera de separar programas que puedan acceder a cosas del sistema y que otros no. ¿rings 0 y 3???
+- Necesito una manera de separar programas que puedan acceder a cosas del sistema y que otros no. ¿rings 0 y 3??? (con acceder al sistema me refiero simuladamente, no del real real XDXDD)
 
 # === [📄] NOTAS (irónico): [📄] === #
 Flujo (esperado) de Windows12:
@@ -109,3 +110,9 @@ Flujo (esperado) de Windows12:
 - usuario hace doble click en ícono:
 - - *Probablemente* se ejecuta "ShellExecute()" que resuelve asociaciones (.png, .txt, .html, etc) y termina llamando al CreateProcess() con los programas y args necesarios
 - - PCB vive hasta que termina el programa
+
+# === === === === === === === #
+#     [⏳] CHANGELOG [⏳]     #
+# === === === === === === === #
+=== 5/06/2026/Tue ===
+- Mostrar iconos hardcodeados para dar por INICIADO el proyecto XDXD
