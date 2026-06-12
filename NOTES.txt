@@ -6,7 +6,7 @@ Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬�
 - FS: Implementar resolución de rutas (ignorar "/" absurdos, parsear "\", etc..)
 - FS: Implementar metodo list() que devuelva todos los elementos listados en un directorio
 
-# === [💡] IDEAS (solo IDEAS): [💡] === #
+# === [💡] IDEAS (solo IDEAS) (o mejor conocido como.. LA COCINA DE 12STEVE🗣️🗣️🗣️🔥🔥🔥🍳🍳🍳🍳): [💡] === #
 - OJO PLS PLS: HACER TODO ASYNC PARA PODER TENER DELAYS Y SLEEPS BONITOS
 - TextMode y GraphicMode (y cambiar entre uno y otro durante el booteo)
 - Lenguaje Bytecode (ECSE)
@@ -19,6 +19,7 @@ Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬�
 - IMAGE_CONTENT: JSON.stringify({
     ".header": {
         format: "EXECUTABLE" | "DLL",
+        native: true | false, // [oculto, DLLs del sistema]
         version: 1, // más útil que goto🥀
         arch: "ECSE32",//lmao
         subsystem: "CONSOLE" | "WINDOWS", 
@@ -98,10 +99,44 @@ Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬�
 - Guardar el registry en formato XML (para más variedad en el sistema además del JSON)
 - Los DLL's importados deberán mantener un estado global cuando sean (1 sola instancia). Tipo "ejecutarse una sola vez" y el resultado de su ejecución (variables y funcs exportadas) quedan iguales para todos quienes las importen
 - - Esto permitiria que las DLLs guarden estado interno inaccesible desde afuera. imagina las posibilidades 👀👀
+
+== Ideas para los procesos (tanto "user" como "admin" (que tanto pueden acceder a opcodes especiales)) ==
+- `CreateProcess(path, { runAs: "user" | "admin" | "parent", parent: caller_PCB_obj{} })`
+|------------------------------|-----------------------|--------------------|
+|Proceso Parent (parent.runAs) |CreateProcess( runAs ) |Proceso Hijo Creado |
+|------------------------------|-----------------------|--------------------|
+| user                         | "user"                | "user"             |
+| user                         | "admin"               | Pregunta UAC y luego crea proc "admin" |
+| user                         | "parent"              | "user"             |
+| admin                        | "user"                | "user"             |
+| admin                        | "admin"               | Pregunta UAC (si, siempre) y luego crea proc "admin" |
+| admin                        | "parent"              | crea proc "admin" SIN preguntar |
+|------------------------------|-----------------------|--------------------|
+- Las DLL's no tienen permisos ni nada, solamente usan el runAs del programa que las callea
+== Arquitectura de ECSE ==
+-> OP Públicos:
+- - ADD, CONSOLE_LOG, SET
+-> OP Privilegiados (necesitan runAs: "admin"):
+- - FS_WRITE_FILE con rutas internas (C:/Windows/, etc...)
+-> OP Reservados (necesitan native: true):
+- - FS_WRITE_FILE, PM_KILL
+
+- lo "native: true" solamente sirve para que pueda ejecutar los OPCODES reservados directamente, que para un programa normal le tomaría usar funciones exportadas de DLL's nativas
+- al cargar las DLL's, ejecutar su código con el PCB de el proceso caller TENIENDO EN CUENTA que si tiene native: true, añadir "native: true" a la copia del pcb del caller que se le pasa a ECSE para que habilite los OPCODEs reservados al ver "pcb.native"
+
 # === [❓] DUDAS: [❓] === #
-- Necesito una manera de separar programas que puedan acceder a cosas del sistema y que otros no. ¿rings 0 y 3??? (con acceder al sistema me refiero simuladamente, no del real real XDXDD)
+- El BSOD será un "div encima de todo con carita triste y la info del error" o "cambio a modo texto e imprimo la info del error en fondo azul"!??!??
+- explorer.exe corre como user o admin!??!?!?!?!?!?
 
 # === [📄] NOTAS (irónico): [📄] === #
+- QUIERO OBLIGAR a que los programas usen funciones exportadas por .dll's, pero a la vez que las DLLs si puedan usar los OPCODEs que llaman directo a JS. Ejemplo:
+- Notepad quiere guardar archivo
+- Notepad NO puede usar "FS_WRITE_FILE" porque no tiene "native: true", por lo que el OPCODE ni existe para el
+- Notepad recapacita y hace inteligentemente "CALL WriteFile", a la función WriteFile que le proporcionó kernel32.dll
+- ECSE ejecuta el código de la función WriteFile (la cual usa FS_WRITE_FILE)
+- ECSE ve que kernel32.dll es native, por lo que ejecuta el OPCODE
+- Notepad guardó tu archivo .txt todo qlero con éxito tras varias abstracciones totalmente inútiles pero necesarias, bravo!!
+
 Flujo (esperado) de Windows12:
 - Se ejecuta booteo (sea hardcodeado o dinamico por drive)
 - Boot cambia modo texto a modo gráfico (si se llega a implementar)
