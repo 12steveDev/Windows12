@@ -31,7 +31,7 @@ const FS = {
         let parts = path.replace(/\\/g, "/").split("/").filter(p => p);
         const resultPath = [];
         // ruta absoluta con unidad
-        if (/^A-Z:/i.test(path)){ // !!! HACIENDO ESTO!!!
+        if (/^[A-Z]:/i.test(path)){ // !!! HACIENDO ESTO!!!
             // nada we, parts ya está absoluto
         } else if (path.startsWith("/")){ // ruta absoluta a la unidad actual
             parts = [pcb.cwd.split("/")[0], ...parts];
