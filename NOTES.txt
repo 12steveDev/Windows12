@@ -48,15 +48,15 @@ Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬�
 });
 - IDEOTA: Hacer que todo el contenido (o solamente el código .text) simule ser binario con "btoa()" y al leer simplemente usar "atob()" (NO ES PROTECCIÓN, solamente para recrear eso de que "leo un .exe = bytes ilegibles")
 ```
-- FS será dividido entre:
+- FS dividido entre:
 ```
 "C:": {
     name: "C:",
     volumeLabel: "DriveEpicardo",
     type: "dir",
     children: {
-        "CARPETAEPICARDA": {
-            name: "CarpetaEpicarda",
+        "CARPETAEPICARDA": { // clave en uppercase para que sea case-insensitive
+            name: "CarpetaEpicarda", // guardar name original para case-presserve
             type: "dir",
             creationTime: Date.now(),
             lastModified: Date.now(),
@@ -81,13 +81,14 @@ Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬�
     pid: 12,
     path: "C:/Windows/Desktop/miProg.exe",
     cmdLine: "C:/Windows/Desktop/miProg.exe --param1 --param2=jeje",
+    cwd: "C:/Windows/Desktop/",   // NUEVO!!
     dllUsed: {}, // { "USER32.DLL": ["MessageBox", "CreateWindow"] } (se actualiza leyendo el .idata del ejecutable antes de crear el PCB)
     argv: ["C:/Windows/Desktop/miProg.exe", "--param1", "--param2=jeje"],
     argc: 3,
     res: exe[".rsrc"], // el programa podrá acceder a sus rsrc
     format: exe[".header"].format,
     arch: exe[".header"].arch,
-    exported: exe[".edata"],
+    exports: exe[".edata"],
     scopes: [{ // scopes para mantener uno global y otros locales (vars modificables globalmente desde una función, etc...)
         vars: exe[".data"] ?? {},
         funcs: {},
@@ -126,8 +127,14 @@ Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬�
 
 # === [❓] DUDAS: [❓] === #
 - El BSOD será un "div encima de todo con carita triste y la info del error" o "cambio a modo texto e imprimo la info del error en fondo azul"!??!??
-- explorer.exe corre como user o admin!??!?!?!?!?!?
-
+- explorer.exe corre como user o admin!??!?!?!?!?!? (los procesos creados desde explorer obviamente se sabe que serán "user" o "admin" si se especifica")
+- la manera en la que se almacenarán los elementos DOM creados por un pcb/proceso, ¿cómo será?
+- - 1. Al crear el elemento DOM, asignarle su "data-pid". Así al matar el proceso simplemente buscar elementos con el data-pid igual
+- - 2. Al crear el elemento DOM, pushearlo en un array dentro del PCB del proceso. Así al matar el proceso simplemente hacer "pcb.elems.forEach.remove()"
+- - - 1.5: Usar el data-pid y a la vez guardar el elemento DOM en un array dentro del PCB. No entiendo la necesidad de esto la verdad
+- - 3. Por cada elemento DOM creado, asignar un ID UNICO a ese elemento y en el PCB SOLAMENTE añadir ESE ID, y al matar, buscar cada elemento por su ID. Esto es claramente innecesario y opcional.... pero esa es la idea no?👀🚬
+- ¿permitir que cada "fs" pueda especificar si es case-sensitive o no!?? aunque el lío con esto es que ahora métodos como "makeDir" o "writeFile" tendrán que comprobar si el FS es o no case-sensitive y basado en eso crear la key que se pondrá en el FS........ otra featura completamente innecesaria XDXDD
+- Y la duda más importante... ¿Microsoft está temblando?... 👀🍳🔥‼️
 # === [📄] NOTAS (irónico): [📄] === #
 - QUIERO OBLIGAR a que los programas usen funciones exportadas por .dll's, pero a la vez que las DLLs si puedan usar los OPCODEs que llaman directo a JS. Ejemplo:
 - Notepad quiere guardar archivo
