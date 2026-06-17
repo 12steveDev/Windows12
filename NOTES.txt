@@ -3,7 +3,7 @@
 Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬🚬
 
 # === [🛠️] TODO: [🛠️] === #
-- FS: Implementar resolución de rutas (ignorar "/" absurdos, parsear "\", etc..)
+- FS: Implementar método interno _navigateTo() para ir dentro de rutas
 - FS: Implementar metodo list() que devuelva todos los elementos listados en un directorio
 
 # === [💡] IDEAS (solo IDEAS) (o mejor conocido como.. LA COCINA DE 12STEVE🗣️🗣️🗣️🔥🔥🔥🍳🍳🍳🍳): [💡] === #
@@ -156,5 +156,14 @@ Flujo (esperado) de Windows12:
 # === === === === === === === #
 #     [⏳] CHANGELOG [⏳]     #
 # === === === === === === === #
-=== 5/06/2026/Tue ===
-- Mostrar iconos hardcodeados para dar por INICIADO el proyecto XDXD
+=== 05/06/2026/Fri ===
+- Mostrar iconos hardcodeados para dar por INICIADO el proyecto XDXD (index.html)
+=== 15/06/2026/Mon ===
+- Implementar ERROR_*'s para manejo de errores (utils.js)
+=== 16/06/2026/Tue ===
+- Implementar `FS.splitPath(path, pcb)` (fs.js). Permite:
+--> Detección de unidades ("C:", "Z:"), ignoración de "/" repetidos absurdos, "\" a "/"
+--> Rutas absolutas con unidades ("C:/Windows/Desktop")
+--> Rutas absolutas a la unidad actual (pcb.cwd) ("/Windows/Desktop")
+--> Rutas relativas al cwd ("./images/something.png", "imates/something.png")
+--> Resolución de "." y ".." intermediarios ((cwd="C:/Windows/Desktop/"), "./../System/" -> "C:/Windows/System/", "../" -> "C:/Windows/", "./../../../../../../" -> "C:/")

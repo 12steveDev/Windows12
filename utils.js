@@ -27,7 +27,7 @@ const ERROR = { // I NEED A HERO🗣️🗣️🗣️🔥🔥🔥🔥
     CURRENT_DIRECTORY: 16,      // no se puede eliminar el directorio actual
     NOT_SAME_DEVICE: 17,        // no se puede mover entre dispositivos distintos
     NO_MORE_FILES: 18,          // no hay más archivos
-    WRITE_PROTECT: 19,          // 
+    WRITE_PROTECT: 19,          // medio protegido contra escritura
     BAD_UNIT: 20,               // 
     NOT_READY: 21,              // 
     BAD_COMMAND: 22,            // 
@@ -40,13 +40,18 @@ const ERROR = { // I NEED A HERO🗣️🗣️🗣️🔥🔥🔥🔥
     WRITE_FAULT: 29,            // 
     READ_FAULT: 30,             // 
     GEN_FAILURE: 31,            // 
-    SHARING_VIOLATION: 32,      // 
-    LOCK_VIOLATION: 33,         // 
+    SHARING_VIOLATION: 32,      // otro proceso tiene el archivo bloqueado
+    LOCK_VIOLATION: 33,         // región bloqueada
+    HANDLE_EOF: 38,             // llegaste al final del archivo
+    FILE_EXISTS: 80,            // archivo ya existe
     INVALID_PARAMETER: 87,      // el parametro es incorrecto, lee la documentación pa
+    DISK_FULL: 112,             // disco lleno
     INSUFFICIENT_BUFFER: 122,   // tu buffer da pena bro
     ALREADY_EXISTS: 183,        // el archivo o carpeta ya existe
-    FILENAME_EXCED_RANGE: 206,  // el archivo o extención es demasiado largo. no te emociones we
+    FILENAME_EXCED_RANGE: 206,  // el archivo o extención es demasiado largo. no te emociones mucho kbron
+    DIRECTORY: 267,             // ruta inválida porque esperaba un directorio
     DEVICE_DOOR_OPEN: 1166,     // cierra la tapa del lector de CD, animal
+    FILE_CORRUPT: 1392,         // archivo o sistema de archivos corrupto
 }
 const ERROR_STR = Object.fromEntries(
     Object.entries(ERROR).map(([k, v])=> [v, `ERROR_${k}`])
