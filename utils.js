@@ -72,3 +72,4 @@ const appendChild = (elem, ...childs) => childs.forEach(c => elem.appendChild(c)
 const text = (elem, text) => elem.textContent = text;
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 const randint = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const sizeof = (val) => new TextEncoder().encode(val).length;
