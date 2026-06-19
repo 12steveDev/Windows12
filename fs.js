@@ -48,7 +48,7 @@ const FS = {
                                     creationTime: Date.now(),
                                     lastModified: Date.now(),
                                     attrs: 0b0000,
-                                    size: 2,
+                                    size: 7,
                                     content: "Hi"
                                 },
                                 "MI CARPETA": {
@@ -65,6 +65,25 @@ const FS = {
                 }
             }
         }
+    },
+    /**
+     * **xd**
+     */
+    generateHashedGarbage(path, length){
+        path = path.toUpperCase(); // quizás ayude o quizás no
+        let hash = 0;
+        for (let i = 0; i < path.length; i++){
+            hash = ((hash << 5) - hash) + path.charCodeAt(i);
+            hash |= 0; // convertir a int 32-bits
+        }
+        let garbage = "";
+        let seed = hash >>> 0;
+        for (let i = 0; i < length; i++){
+            seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+            const byte = (seed >> 16) & 0xFF; // byte 0-255
+            garbage += String.fromCharCode(byte);
+        }
+        return garbage;
     },
     splitPath(path, pcb={ cwd: "C:/" }){
         // filtrar "/" repetidos y "\"'s
@@ -106,7 +125,7 @@ const FS = {
                 if ((i === parts.length - 1) && preserveLastMissing){
                     return { parent: curr, name: cuteNameDir, exists: false }; // !!! AQUI ME QUEDE !!! //
                 }
-                return makeError(ERROR.PATH_NOT_FOUND, `No existe: ${cuteNameDir}`);
+                return makeError(ERROR.PATH_NOT_FOUND, `El directorio no existe: ${cuteNameDir}`);
             }
             parent = curr;
             curr = curr.children[dir];
@@ -142,7 +161,7 @@ const FS = {
         // no es un archivo
         if (target.type !== "file") return makeError(ERROR.DIRECTORY, `No es un archivo: ${target.name}`);
         // existe pero es solo lectura (READONLY)
-        if ((target.attrs & FS.FILE_ATTR_READONLY) && result.exists) return makeError(ERROR.ACCESS_DENIED, `Acceso denegado: El archivo es solo lectura: ${target.name}`);
+        if ((target.attrs & FS.FILE_ATTR_READONLY) && result.exists) return makeError(ERROR.ACCESS_DENIED, `El archivo es solo lectura: ${target.name}`);
         // escribir archivo
         target.content = content;
         target.size = sizeof(content);
@@ -151,20 +170,45 @@ const FS = {
         return target.size; // retornar bytes escritos, alta referencia eehh ehhh 👀👀👀
     },
     readFile(pcb, path){
-        const result = this._navigate(path, false, pcb);
+        const result = this._navigate(path, true, pcb); // uso preserveLastMissing aquí porque si lo tuviera desactivado, en caso de que no exista devolverá "ERROR_PATH_NOT_EXISTS", lo cual es incorrecto
         if (isError(result)) return result;
+        if (!result.exists) return makeError(ERROR.FILE_NOT_FOUND, `El archivo no existe: ${result.name}`);
         const target = result.target;
         if (target.type !== "file") return makeError(ERROR.DIRECTORY, `No es un archivo: ${target.name}`);
         // TODO: Si "target.size" es mayor que el tamaño real del "target.content", rellenar con caracteres basura generados mediante hash (con el path como seed)
-        return target.content.slice(0, target.size); // !!! AQUI ME QUEDE !!! //
+        let content = target.content.slice(0, target.size);
+        if (target.size > sizeof(target.content)){
+            content += this.generateHashedGarbage(path, target.size - sizeof(target.content));
+        }
+        return content;
+    },
+    deleteFile(pcb, path){
+        const result = this._navigate(path, true, pcb);
+        if (isError(result)) return result;
+        if (!result.exists) return makeError(ERROR.FILE_NOT_FOUND, `El archivo no existe: ${result.name}`);
+        if (result.target.type !== "file") return makeError(ERROR.DIRECTORY, `No es un archivo: ${result.target.name}`);
+        if (result.target.attrs & FS.FILE_ATTR_READONLY) return makeError(ERROR.ACCESS_DENIED, `El archivo es solo lectura: ${result.target.name}`);
+        delete result.parent.children[result.target.name.toUpperCase()]; // borrar
+        return true;
+    },
+    removeDirectory(pcb, path){
+        const result = this._navigate(path, false, pcb); // si no existe, automaticamente lanza ERROR_PATH_NOT_FOUND correctamente
+        if (isError(result)) return result;
+        if (result.target.type !== "dir") return makeError(ERROR.DIRECTORY, `No es un directorio: ${result.target.name}`);
+        // la carpeta no está vacía
+        if (Object.keys(result.target.children).length !== 0) return makeError(ERROR.DIR_NOT_EMPTY, `El directorio no está vacío: ${result.target.name}`);
+        // if (result.target.attrs & FS.FILE_ATTR_READONLY) Microsoft.Windows.noHacerNadaXdxdxd(); // demasiado real, pobres carpetas xdxd
+        delete result.parent.children[result.target.name.toUpperCase()];
+        return true;
     },
     tree(curr=FS.drives["C:"], __main=true, __indent=2){
         let msg = __main ? `💽 ${curr.name} (${curr.volumeLabel})/\n` : "";
         for (const dir of Object.values(curr.children)){
             msg += " ".repeat(__indent);
             msg += dir.type === "dir"
-                ? `📂 ${dir.name}/\n`
-                : `📄 ${dir.name} (${dir.size} bytes (${sizeof(dir.content)}))\n`;
+                ? `📂 ${dir.name}/\t\t\t`
+                : `📄 ${dir.name} (${dir.size} bytes (${sizeof(dir.content)}))\t`;
+            msg += `\t[${bin(dir.attrs, 8)}]\n`;
             if (dir.type === "dir"){
                 msg += FS.tree(dir, false, __indent + 2);
             }
@@ -173,5 +217,5 @@ const FS = {
     },
 }
 
-FS.writeFile({cwd:"C:/Windows"}, "Desktop/wi.txt", "Hola Mundo UwU", FS.FILE_ATTR_NORMAL);
+FS.writeFile(TEST_PCB, "../Desktop/wi.txt", "Hola Mundo UwU", FS.FILE_ATTR_NORMAL | FS.FILE_ATTR_READONLY);
 FS.tree()

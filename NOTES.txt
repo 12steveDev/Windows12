@@ -1,10 +1,15 @@
 # NOTES.txt #
 
 Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬🚬
+"Los bugs no son errores, son features no documentadas..." - Windows12
+"Página web con complejo de sistema operativo🚬🚬🗿🗿"
+
+# === [❗] FEATURE HACIENDO ACTUALMENTE (mi memoria es una cagada) [❗] === #
+- Planificando empezar processManager.js
+- Contemplando como fs.js está tan bien que no hay ningún Uncaught error hehe
 
 # === [🛠️] TODO: [🛠️] === #
-- FS: Implementar método interno _navigateTo() para ir dentro de rutas
-- FS: Implementar metodo list() que devuelva todos los elementos listados en un directorio
+- PM: Crear el archivo processManager.js xd
 
 # === [💡] IDEAS (solo IDEAS) (o mejor conocido como.. LA COCINA DE 12STEVE🗣️🗣️🗣️🔥🔥🔥🍳🍳🍳🍳): [💡] === #
 - OJO PLS PLS: HACER TODO ASYNC PARA PODER TENER DELAYS Y SLEEPS BONITOS
@@ -125,6 +130,31 @@ Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬�
 - lo "native: true" solamente sirve para que pueda ejecutar los OPCODES reservados directamente, que para un programa normal le tomaría usar funciones exportadas de DLL's nativas
 - al cargar las DLL's, ejecutar su código con el PCB de el proceso caller TENIENDO EN CUENTA que si tiene native: true, añadir "native: true" a la copia del pcb del caller que se le pasa a ECSE para que habilite los OPCODEs reservados al ver "pcb.native"
 
+# === [✅] FEATURES: [✅] === #
+Utils (utils.js):
+- ni en sueños me pongo a listar todas las weas que tiene ese bendito archivo🙏🙏
+
+Desktop (index.html):
+- Mostrar iconos hardcodeados para dar por INICIADO el proyecto XDXD
+
+FileSystem / FS (fs.js):
+- Atributos para los archivos y carpetas como "READONLY", "HIDDEN", "ARCHIVE", "SYSTEM", "DIRECTORY", etc...
+- Implementar `FS.splitPath(path, pcb)`. Permite:
+==> Detección de unidades ("C:", "Z:"), ignoración de "/" repetidos absurdos, "\" a "/"
+==> Rutas absolutas con unidades ("C:/Windows/Desktop")
+==> Rutas absolutas a la unidad actual (pcb.cwd) ("/Windows/Desktop")
+==> Rutas relativas al cwd ("./images/something.png", "imates/something.png")
+==> Resolución de "." y ".." intermediarios ((cwd="C:/Windows/Desktop/"), "./../System/" -> "C:/Windows/System/", "../" -> "C:/Windows/", "./../../../../../../" -> "C:/")
+- Implemetar `FS._navigateTo(path, presserveLastMissing, pcb)`, el cual:
+==> Si existe la ruta: La devuelve en formato: { target, parent, exists: true }
+==> Si no existe: Devuelve { name, parent, exists: false }
+==> Si sucede un error durante el recorrido de el path (una carpeta no existe o intento de acceder dentro de un archivo): Devuelve ERROR_* asociado (ERROR_PATH_NOT_FOUND, ERROR_DIRECTORY, etc...)
+== => este ultimo ayuda a que cualquier otra función que llame a _navigateTo se ahorre el trabajo de manejar estos errores comunes
+- Implementar `writeFile(pcb, path, content, attrs); readFile(pcb, path); deleteFile(pcb, path); removeDirectory(pcb, path)`;
+
+ProcessManager / PM (processManager.js):
+- no existexdxdxd
+
 # === [❓] DUDAS: [❓] === #
 - El BSOD será un "div encima de todo con carita triste y la info del error" o "cambio a modo texto e imprimo la info del error en fondo azul"!??!??
 - explorer.exe corre como user o admin!??!?!?!?!?!? (los procesos creados desde explorer obviamente se sabe que serán "user" o "admin" si se especifica")
@@ -134,9 +164,24 @@ Windows12: El sistema que te vende más humo que los de la esquina xdxd🚬🚬�
 - - - 1.5: Usar el data-pid y a la vez guardar el elemento DOM en un array dentro del PCB. No entiendo la necesidad de esto la verdad
 - - 3. Por cada elemento DOM creado, asignar un ID UNICO a ese elemento y en el PCB SOLAMENTE añadir ESE ID, y al matar, buscar cada elemento por su ID. Esto es claramente innecesario y opcional.... pero esa es la idea no?👀🚬
 - ¿permitir que cada "fs" pueda especificar si es case-sensitive o no!?? aunque el lío con esto es que ahora métodos como "makeDir" o "writeFile" tendrán que comprobar si el FS es o no case-sensitive y basado en eso crear la key que se pondrá en el FS........ otra featura completamente innecesaria XDXDD
+- en el FS, ¿debería dejar de usar "elem.type === 'dir'" y comenzar a usar "elem.attrs & FS.FILE_ATTR_DIRECTORY"!???
+- ¿debería implementar Handlers para FS!???? tipo para leer un archivo:
+- - FS.open("...", ...flags);
+- - FS.open devuelve HANDLE (un ID)
+- - FS.open crea una key nueva en FS.hTable (tipo hTable: { 1: { target: ...fileObj, path: "C:/...", access: GENERIC_READ, shareMode: FILE_SHARE_READ, createDisp: OPEN_ALWAYS } })
+- - FS.readFile(HANDLE)
+- - FS.readFile busca handle en FS.hTable[HANDLE.id]
+- - FS.readFile lee directamente en el hFile.target.content
+- - FS.writeFile externo intenta escribir en el archivo -> writeFile detecta que un HANDLE de hTable está usando sin exponer FILE_SHARE_WRITE -> ERROR_SHARING_VIOLATION
+- - FS.closeHandle(HANDLE) libera el handle
+- - Felicidades!! Hicistes lo mismo que hace FS.writeFile() directamente, pero con HANDLES y 1200 vueltas más al asunto, ¡Muy Win12-vibes!👏👏 (ayuda)
 - Y la duda más importante... ¿Microsoft está temblando?... 👀🍳🔥‼️
+
 # === [📄] NOTAS (irónico): [📄] === #
-- QUIERO OBLIGAR a que los programas usen funciones exportadas por .dll's, pero a la vez que las DLLs si puedan usar los OPCODEs que llaman directo a JS. Ejemplo:
+CREO que empecé esta versión de Win12 el 05/06/2026/Viernes.
+¿ECSE se consideraría una feature de Windows12 o literalmente otro proyecto aparte que Windows12 usa!?😭😭😭
+Alguien que me quiera donar vaya a google.com jeje
+QUIERO OBLIGAR a que los programas usen funciones exportadas por .dll's, pero a la vez que las DLLs si puedan usar los OPCODEs que llaman directo a JS. Ejemplo:
 - Notepad quiere guardar archivo
 - Notepad NO puede usar "FS_WRITE_FILE" porque no tiene "native: true", por lo que el OPCODE ni existe para el
 - Notepad recapacita y hace inteligentemente "CALL WriteFile", a la función WriteFile que le proporcionó kernel32.dll
@@ -153,17 +198,14 @@ Flujo (esperado) de Windows12:
 - - *Probablemente* se ejecuta "ShellExecute()" que resuelve asociaciones (.png, .txt, .html, etc) y termina llamando al CreateProcess() con los programas y args necesarios
 - - PCB vive hasta que termina el programa
 
-# === === === === === === === #
-#     [⏳] CHANGELOG [⏳]     #
-# === === === === === === === #
-=== 05/06/2026/Fri ===
-- Mostrar iconos hardcodeados para dar por INICIADO el proyecto XDXD (index.html)
-=== 15/06/2026/Mon ===
-- Implementar ERROR_*'s para manejo de errores (utils.js)
-=== 16/06/2026/Tue ===
-- Implementar `FS.splitPath(path, pcb)` (fs.js). Permite:
---> Detección de unidades ("C:", "Z:"), ignoración de "/" repetidos absurdos, "\" a "/"
---> Rutas absolutas con unidades ("C:/Windows/Desktop")
---> Rutas absolutas a la unidad actual (pcb.cwd) ("/Windows/Desktop")
---> Rutas relativas al cwd ("./images/something.png", "imates/something.png")
---> Resolución de "." y ".." intermediarios ((cwd="C:/Windows/Desktop/"), "./../System/" -> "C:/Windows/System/", "../" -> "C:/Windows/", "./../../../../../../" -> "C:/")
+# === [©] RELLENO [©] === #
+╔══════════════════════════════════════════════════════════════╗
+║  WINDOWS 12                                                  ║
+║  Copyright (c) 2026 - 12steve                                ║
+║                                                              ║
+║  Este es un proyecto casi educativo y puro entretenimiento.  ║
+║  Microsoft Windows es una marca registrada de                ║
+║  Microsoft Corporation. Este proyecto NO está                ║
+║  afiliado, respaldado ni asociado con Microsoft... pero si   ║
+║  me quieren enviar algún regalito no me quejo 7w7.           ║
+╚══════════════════════════════════════════════════════════════╝
