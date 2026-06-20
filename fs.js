@@ -111,6 +111,11 @@ const FS = {
         // retornar jeje, qué esperabas
         return resultPath;
     },
+    getParentFromPath(path){
+        const parts = this.splitPath(path);
+        parts.pop();
+        return parts.join("/");
+    },
     _navigate(path, preserveLastMissing=false, pcb={ cwd: "C:/" }){
         const parts = this.splitPath(path, pcb);
         const drive = parts.shift();
@@ -218,4 +223,12 @@ const FS = {
 }
 
 FS.writeFile(TEST_PCB, "../Desktop/wi.txt", "Hola Mundo UwU", FS.FILE_ATTR_NORMAL | FS.FILE_ATTR_READONLY);
+FS.writeFile(TEST_PCB, "C:/Windows/Desktop/test.exe", makeExe({
+    ".header": {
+        entrypoint: ".test"
+    },
+    ".test": [
+        ["CONSOLE_LOG", "Hola Mundo!"]
+    ]
+}))
 FS.tree()

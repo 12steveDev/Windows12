@@ -1,13 +1,15 @@
 // utils.js
 const debug = {
-    errors: 0
+    errors: 0,
+    procs: 0,
 };
 /**
  * OJO: Esto usa `.querySelector()`, **especificar** con prefijo `"#"` para los ID's!!!
  */
 const $ = (elem, parent=document) => parent.querySelector(elem);
 const E = (elem) => document.createElement(elem);
-const TEST_PCB = { cwd: "C:/Windows/Tests" }
+const TEST_PCB = { cwd: "C:/Windows/Tests" };
+const ECSE_HEADER = "12ECSE\x12";
 // === ERRORES === //
 const ERROR = { // I NEED A HERO🗣️🗣️🗣️🔥🔥🔥🔥
     SUCCESS: 0,                 // ERROR_SUCCESS... bruh🥀🥀
@@ -57,6 +59,7 @@ const ERROR = { // I NEED A HERO🗣️🗣️🗣️🔥🔥🔥🔥
     ALREADY_EXISTS: 183,        // el archivo o carpeta ya existe
     BAD_EXE_FORMAT: 193,        // intentaste ejecutar cualquier porquería
     FILENAME_EXCED_RANGE: 206,  // el archivo o extención es demasiado largo. no te emociones mucho kbron
+    EXE_MACHINE_TYPE_MISMATCH: 216, // intentaste ejecutar "x86" en "xD"
     PIPE_BUSY: 231,             // la tubería está ocupada chambeando
     NO_DATA: 232,               // estás hablando solo w xdxd (no hay nadie del otro lado)
     PIPE_NOT_CONNECTED: 253,    // intentaste usar una pipe imaginaria
@@ -95,4 +98,38 @@ const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 const randint = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const sizeof = (val) => new TextEncoder().encode(val).length;
 const hex = (num, pad=2, suffix=true) => (suffix ? "0x" : "") + num.toString(16).toUpperCase().padStart(pad, "0");
-const bin = (num, pad=4, suffix=true) => (suffix ? "0b" : "") + num.toString(2).toUpperCase().padStart(pad, "0")
+const bin = (num, pad=4, suffix=true) => (suffix ? "0b" : "") + num.toString(2).toUpperCase().padStart(pad, "0");
+
+function makeExe(exe, optimized=false){
+    // ojalá la creación de apk's en Android sea igual de bonita que aquí
+    // === HEADER === //
+    const header = {
+        format: "EXECUTABLE",
+        version: 1, // más útil que goto🥀
+        arch: "ECSE32", //lmao
+        subsystem: "CONSOLE",
+        entrypoint: ".text",
+        compiledAt: Date.now(),
+        DOSStubSecretMessage: optimized ? "" : "Este programa no puede ejecutarse en calculadora de bolsillo mode." // alta referencia lol
+    }
+    // usar valores que ya creó el exe
+    if (exe[".header"]){
+        Object.assign(header, exe[".header"]);
+    }
+    // asegurar que el header tenga todos los params
+    exe[".header"] = header;
+    const entry = exe[".header"].entrypoint;
+    // === IDATA === //
+    if (!exe[".idata"]) exe[".idata"] = {
+        "USER32.DLL": ["MessageBox", "CreateWindow"] // ! TESTEO, BORRAR
+    }
+    // === EDATA === //
+    if (!exe[".edata"]) exe[".edata"] = {};
+    // === DATA === //
+    if (!exe[".data"]) exe[".data"] = {};
+    // === DATA === //
+    if (!exe[".rsrc"]) exe[".rsrc"] = {};
+    // === TEXT === //
+    if (!exe[entry]) exe[entry] = [];
+    return ECSE_HEADER + JSON.stringify(exe);
+}
